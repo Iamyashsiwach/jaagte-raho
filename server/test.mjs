@@ -6,7 +6,7 @@ import path from 'node:path';
 import {once} from 'node:events';
 import {randomUUID} from 'node:crypto';
 import {createApp} from './index.mjs';
-import {conversation, voice, ProviderError} from './providers.mjs';
+import {conversation, voice, customAssistant, ProviderError} from './providers.mjs';
 const token = 'test-token-for-local-validation-only';
 async function fixture(t, overrides = {}) {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'raho-test-'));
@@ -179,4 +179,33 @@ test('incomplete or empty conversation outputs cannot be spoken as valid respons
     await assert.rejects(conversation({key:'fake',transcript:'yes',language:'en',
       fetcher:async () => new Response(JSON.stringify(body))}),ProviderError);
   }
+});
+test('custom assistant forwards only a short transcript and keeps credentials server-side', async () => {
+  const text = await customAssistant({url:'https://agent.example/chat',token:'fake-endpoint-token',transcript:'hello',language:'en',fetcher:async (url,init) => {
+    assert.equal(url,'https://agent.example/chat'); assert.equal(init.redirect,'error');
+    assert.equal(init.headers.Authorization,'Bearer fake-endpoint-token');
+    const payload = JSON.parse(init.body);
+    assert.equal(payload.transcript,'hello'); assert.equal(payload.context,'road_companion');
+    assert.equal(payload.location,undefined);
+    return new Response(JSON.stringify({text:'Hello, driver.'}));
+  }});
+  assert.equal(text,'Hello, driver.');
+});
+test('custom assistant rejects missing and oversized output', async () => {
+  for (const text of ['', 'x'.repeat(601), 123]) {
+    await assert.rejects(customAssistant({url:'https://agent.example',transcript:'hi',language:'en',fetcher:async () => new Response(JSON.stringify({text}))}),ProviderError);
+  }
+});
+test('companion endpoint validates assistant and supports a configured custom agent', async t => {
+  const {req} = await fixture(t,{assistantURL:'https://agent.example/chat',fetcher:async () => new Response(JSON.stringify({text:'Hello from your assistant.'}))});
+  assert.equal((await req('/v1/companion',{transcript:'hi',language:'en',assistant:'unknown'})).status,400);
+  assert.equal((await req('/v1/companion',{transcript:'hi',language:'en',assistant:'custom'},false)).status,401);
+  const response = await req('/v1/companion',{transcript:'hi',language:'en',assistant:'custom'});
+  assert.equal(response.status,200); assert.equal((await response.json()).text,'Hello from your assistant.');
+});
+test('custom assistant configuration requires credential-free HTTPS URL', async t => {
+  const dir = await mkdtemp(path.join(os.tmpdir(),'raho-agent-test-'));
+  t.after(() => rm(dir,{recursive:true,force:true}));
+  await assert.rejects(createApp({token,dataDir:dir,assistantURL:'http://agent.example'}),/HTTPS/);
+  await assert.rejects(createApp({token,dataDir:dir,assistantURL:'https://user:password@agent.example'}),/HTTPS/);
 });

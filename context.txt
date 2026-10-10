@@ -1,5 +1,20 @@
 SAARTHI — CONTINUATION CONTEXT
 Updated: 2026-10-10. Repository: https://github.com/Iamyashsiwach/jaagte-raho
+LATEST DEMO UPDATE: Companion is named OLLIE; app remains SAARTHI. New onboarding,
+mascot dashboard, companion hub, online Smallest speech, hands-free turns, a
+story/quiz in all three languages, music-library picker, opt-in GPS routes and
+location snapshot sharing are implemented. Custom HTTPS assistant adapter is
+server-side. Smallest live TTS returned HTTP 200 with valid WAV on this Mac.
+Provider credential is in ignored .env only. General AI conversation still needs
+OpenAI or a custom endpoint; Smallest alone voices the scripted companion content.
+32 Swift core assertions and 23 backend tests pass. Real MediaPipe simulator app
+build/link/install/launch succeeded. Xcode 27 provides Device Hub instead of
+Simulator.app; the iPhone 17 (iOS 26.5) dashboard is visibly running there, with
+Smallest.ai online voice connected. The simulator helper now opens Device Hub
+and uses local ad-hoc signing so Keychain pairing succeeds without an Apple team.
+The iOS workspace is open in Xcode with that simulator selected. New phone
+GPS/speech/music behavior still needs acceptance. Read docs/FEATURE_SPECS.md and
+docs/FRIEND_SETUP.md for specifics.
 Use MAIN ONLY. Earlier feature branches were removed at the user's request.
 
 IMMEDIATE PRIORITY

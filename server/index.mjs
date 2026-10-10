@@ -3,7 +3,7 @@ import {timingSafeEqual} from 'node:crypto';
 import {mkdir, readdir, readFile, rename, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {conversation, voice} from './providers.mjs';
+import {conversation, voice, customAssistant} from './providers.mjs';
 
 function send(res, status, payload) {
   res.writeHead(status, {'Content-Type': 'application/json', 'Cache-Control': 'no-store'});
@@ -28,9 +28,13 @@ const triggers = new Set(['prolongedClosure', 'closureTrend', 'repeatedYawns', '
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 
 export async function createApp(config) {
-  const {token, dataDir, openAIKey, smallestKey, fleetURL = '', fleetToken = '', model = 'gpt-5-nano', fetcher = fetch} = config;
+  const {token, dataDir, openAIKey, smallestKey, fleetURL = '', fleetToken = '', assistantURL = '', assistantToken = '', model = 'gpt-5-nano', fetcher = fetch} = config;
   if (!token || token.length < 24) throw new Error('APP_TOKEN must contain at least 24 characters');
   if (fleetURL && !fleetURL.startsWith('https://')) throw new Error('Fleet webhook must use HTTPS');
+  if (assistantURL) {
+    const endpoint = new URL(assistantURL);
+    if (endpoint.protocol !== 'https:' || endpoint.username || endpoint.password) throw new Error('Assistant endpoint must use HTTPS without embedded credentials');
+  }
   await mkdir(dataDir, {recursive: true, mode: 0o700});
   const limits = new Map();
   let flushing = false;
@@ -81,7 +85,7 @@ export async function createApp(config) {
       if (!authorized(req, token)) return send(res, 401, {error: 'Unauthorized'});
       if (req.method === 'GET' && url.pathname === '/v1/status') return send(res, 200, {
         conversationConfigured: Boolean(openAIKey), speechConfigured: Boolean(smallestKey),
-        fleetConfigured: Boolean(fleetURL), model});
+        fleetConfigured: Boolean(fleetURL), customAssistantConfigured: Boolean(assistantURL), model});
       const ip = req.socket.remoteAddress, now = Date.now();
       const bucket = limits.get(ip);
       if (!bucket || now - bucket.start > 60000) limits.set(ip, {start: now, count: 1});
@@ -94,7 +98,7 @@ export async function createApp(config) {
         return send(res, event ? 200 : 404, event ? {id, delivery: event.delivery, simulated: event.simulated} : {error: 'Event not found'});
       }
       if (req.method !== 'POST') return send(res, 404, {error: 'Not found'});
-      if (!['/v1/conversation', '/v1/voice', '/v1/events'].includes(url.pathname)) return send(res, 404, {error: 'Not found'});
+      if (!['/v1/conversation', '/v1/companion', '/v1/voice', '/v1/events'].includes(url.pathname)) return send(res, 404, {error: 'Not found'});
       const input = await body(req);
       if (!input || typeof input !== 'object' || Array.isArray(input)) return send(res, 400, {error: 'Request must be an object'});
       if (url.pathname === '/v1/events') {
@@ -113,10 +117,13 @@ export async function createApp(config) {
         return send(res, result.status, {id: result.event.id, delivery: result.event.delivery, simulated: result.event.simulated});
       }
       if (!languages.has(input.language)) return send(res, 400, {error: 'Unsupported language'});
-      if (url.pathname === '/v1/conversation') {
+      if (url.pathname === '/v1/conversation' || url.pathname === '/v1/companion') {
         if (typeof input.transcript !== 'string' || !input.transcript.trim() || input.transcript.length > 500)
           return send(res, 400, {error: 'Invalid transcript'});
-        const text = await conversation({key: openAIKey, model, transcript: input.transcript, language: input.language, fetcher});
+        if (url.pathname === '/v1/companion' && !['saarthi','custom'].includes(input.assistant)) return send(res,400,{error:'Unsupported assistant'});
+        const text = url.pathname === '/v1/companion' && input.assistant === 'custom'
+          ? await customAssistant({url:assistantURL,token:assistantToken,transcript:input.transcript,language:input.language,fetcher})
+          : await conversation({key: openAIKey, model, transcript: input.transcript, language: input.language, companion:url.pathname === '/v1/companion', fetcher});
         return send(res, 200, {text});
       }
       if (typeof input.text !== 'string' || !input.text.trim() || input.text.length > 600)
@@ -140,7 +147,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     dataDir: path.join(path.dirname(fileURLToPath(import.meta.url)), 'data'),
     openAIKey: process.env.OPENAI_API_KEY, smallestKey: process.env.SMALLEST_API_KEY,
     model: process.env.OPENAI_MODEL || 'gpt-5-nano', fleetURL: process.env.FLEET_WEBHOOK_URL,
-    fleetToken: process.env.FLEET_WEBHOOK_TOKEN});
+    fleetToken: process.env.FLEET_WEBHOOK_TOKEN, assistantURL:process.env.ASSISTANT_URL,
+    assistantToken:process.env.ASSISTANT_TOKEN});
   server.listen(Number(process.env.PORT || 8787), process.env.HOST || '127.0.0.1', () => {
     console.log(`Saarthi backend listening on port ${process.env.PORT || 8787}. Credentials are server-side only.`);
   });

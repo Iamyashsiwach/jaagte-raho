@@ -6,6 +6,62 @@ import XCTest
 #endif
 
 final class FatigueEngineTests: XCTestCase {
+    func testJourneyRejectsStaleInvalidAndInaccurateLocations() {
+        let now = Date(timeIntervalSince1970: 1000)
+        var journey = Journey(startedAt: now)
+        XCTAssertFalse(journey.append(.init(latitude: 28, longitude: 77, timestamp: now.addingTimeInterval(-20), accuracy: 5), now: now))
+        XCTAssertFalse(journey.append(.init(latitude: 91, longitude: 77, timestamp: now, accuracy: 5), now: now))
+        XCTAssertFalse(journey.append(.init(latitude: 28, longitude: 77, timestamp: now, accuracy: 150), now: now))
+        XCTAssertTrue(journey.points.isEmpty)
+    }
+    func testJourneyCountsRecordedDistanceAndRejectsGPSJumps() {
+        let start = Date(timeIntervalSince1970: 1000)
+        var journey = Journey(startedAt: start)
+        XCTAssertTrue(journey.append(.init(latitude: 28, longitude: 77, timestamp: start, accuracy: 5), now: start))
+        let next = start.addingTimeInterval(10)
+        XCTAssertTrue(journey.append(.init(latitude: 28.001, longitude: 77, timestamp: next, accuracy: 5), now: next))
+        XCTAssertGreaterThan(journey.distanceMeters, 100)
+        XCTAssertLessThan(journey.distanceMeters, 120)
+        XCTAssertFalse(journey.append(.init(latitude: 29, longitude: 77, timestamp: next.addingTimeInterval(1), accuracy: 5), now: next.addingTimeInterval(1)))
+        XCTAssertEqual(journey.points.count, 2)
+    }
+    func testJourneyPauseAndLongGPSGapsDoNotInventTravel() {
+        let start = Date(timeIntervalSince1970: 1000)
+        var journey = Journey(startedAt: start)
+        _ = journey.append(.init(latitude: 28, longitude: 77, timestamp: start, accuracy: 5), now: start)
+        journey.breakRoute()
+        let resumed = start.addingTimeInterval(30)
+        _ = journey.append(.init(latitude: 29, longitude: 77, timestamp: resumed, accuracy: 5), now: resumed)
+        let gap = resumed.addingTimeInterval(90)
+        _ = journey.append(.init(latitude: 30, longitude: 77, timestamp: gap, accuracy: 5), now: gap)
+        XCTAssertEqual(journey.distanceMeters, 0)
+        XCTAssertEqual(journey.points.map(\.segment), [0, 1, 2])
+    }
+    func testJourneyRejectsOutOfOrderAndStationaryNoise() {
+        let now = Date(timeIntervalSince1970: 1000)
+        var journey = Journey(startedAt: now)
+        let point = JourneyPoint(latitude: 28, longitude: 77, timestamp: now, accuracy: 5)
+        XCTAssertTrue(journey.append(point, now: now))
+        XCTAssertFalse(journey.append(point, now: now))
+        XCTAssertFalse(journey.append(.init(latitude: 28.00001, longitude: 77, timestamp: now.addingTimeInterval(10), accuracy: 5), now: now.addingTimeInterval(10)))
+        XCTAssertEqual(journey.distanceMeters, 0)
+    }
+    func testLocationSharingIsTimestampedAndExplicitlyASnapshot() {
+        let point = JourneyPoint(latitude: 28, longitude: 77, timestamp: Date(), accuracy: 5)
+        XCTAssertTrue(point.shareText.contains("snapshot"))
+        XCTAssertTrue(point.shareText.contains("Updated"))
+        XCTAssertTrue(point.mapsURL.absoluteString.contains("28.0,77.0"))
+    }
+    func testCompanionSupportsAllLanguagesAndRestResponse() {
+        for language in VoiceLanguage.allCases {
+            XCTAssertFalse(CompanionContent.story(language).isEmpty)
+            XCTAssertFalse(CompanionContent.quiz(language).isEmpty)
+            XCTAssertFalse(CompanionContent.greeting(language).isEmpty)
+            XCTAssertEqual(CompanionContent.reply("I am sleepy", language: language), language.text(for: "critical"))
+        }
+        XCTAssertTrue(CompanionContent.quizReply("Mars", language: .english).contains("right"))
+        XCTAssertTrue(CompanionContent.quizReply("Venus", language: .english).contains("answer is Mars"))
+    }
     private func sample(_ t: Double, closed: Bool = false, jaw: Double = 0, pitch: Double = 0) -> FaceMetrics {
         .init(timestamp: t, leftEAR: closed ? 0.05 : 0.30,
               rightEAR: closed ? 0.05 : 0.30, jawOpen: jaw, pitch: pitch)

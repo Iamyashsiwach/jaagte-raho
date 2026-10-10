@@ -6,7 +6,7 @@ struct DashboardView: View {
     @State private var confirmParked = false
 
     private enum DashboardSheet: String, Identifiable {
-        case settings, history
+        case settings, history, companion, journey
         var id: String { rawValue }
     }
 
@@ -19,20 +19,29 @@ struct DashboardView: View {
                 switch model.phase {
                 case .ready:
                     ReadyView(model: model, store: model.store,
-                              showHistory: { sheet = .history }, showSettings: { sheet = .settings })
+                              showHistory: { sheet = .history }, showSettings: { sheet = .settings },
+                              showCompanion: { sheet = .companion }, showJourney: { sheet = .journey })
                 case .calibration:
                     CalibrationView(model: model, camera: model.camera,
                                     endSession: { confirmParked = true })
                 case .driving:
                     DriveView(model: model, camera: model.camera, voice: model.voice,
-                              endSession: { confirmParked = true })
+                              endSession: { confirmParked = true },
+                              showCompanion: { sheet = .companion }, showJourney: { sheet = .journey })
                 }
             }
         }
         .foregroundStyle(RahoTheme.text)
         .sheet(item: $sheet) { selected in
-            if selected == .settings { SettingsView(model: model, voice: model.voice) }
-            else { HistoryView(store: model.store) }
+            switch selected {
+            case .settings: SettingsView(model: model, voice: model.voice)
+            case .history: HistoryView(store: model.store)
+            case .companion: CompanionView(model: model, companion: model.companion, voice: model.voice, music: model.music)
+            case .journey: JourneyView(journey: model.journey)
+            }
+        }
+        .onChange(of: model.snapshot.state) { state in
+            if state == .critical || state == .checkIn { sheet = nil }
         }
         .alert("Are you safely parked?", isPresented: $confirmParked) {
             Button("I'm safely parked · end session", role: .destructive) { model.endSession() }
@@ -48,6 +57,8 @@ private struct ReadyView: View {
     @ObservedObject var store: EventStore
     let showHistory: () -> Void
     let showSettings: () -> Void
+    let showCompanion: () -> Void
+    let showJourney: () -> Void
 
     var body: some View {
         ScrollView {
@@ -55,19 +66,45 @@ private struct ReadyView: View {
                 header
                 VStack(alignment: .leading, spacing: 16) {
                     StatusPill(title: "READY FOR THE ROAD", symbol: "sun.horizon.fill")
-                    Text("A watchful\nco-pilot.")
+                    Text("Every mile,\nwith a friend.")
                         .font(.system(size: 46, weight: .bold, design: .rounded))
                         .tracking(-1.8)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text("For the long road ahead.\nAlerts that speak your language.")
+                    Text("Meet Ollie. A watchful eye,\na familiar voice, a little company.")
                         .font(.body).foregroundStyle(RahoTheme.muted).lineSpacing(5)
-                    RoadIllustration()
+                    SaarthiMascot(size: 210).frame(maxWidth: .infinity)
                     HStack(spacing: 18) {
                         Label("On-device camera", systemImage: "iphone")
                         Label("Offline alerts", systemImage: "wifi.slash")
                     }
                     .font(.caption.weight(.medium)).foregroundStyle(RahoTheme.mint)
                 }
+
+                RahoCard(accent: RahoTheme.mint.opacity(0.25)) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        HStack(spacing: 12) {
+                            SaarthiMascot(size: 58)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Your co-pilot is here.").font(.headline)
+                                Text("Talk · Stories · Quizzes · Music").font(.caption).foregroundStyle(RahoTheme.muted)
+                            }
+                        }
+                        Button(action: showCompanion) { Label("Spend a moment with Ollie", systemImage: "waveform") }.buttonStyle(RahoPrimaryButton(color: RahoTheme.mint))
+                        Text(model.serverStatus).font(.caption).foregroundStyle(RahoTheme.muted)
+                    }
+                }
+                Button(action: showJourney) {
+                    RahoCard {
+                        HStack(spacing: 14) {
+                            Image(systemName: "point.topleft.down.to.point.bottomright.curvepath").font(.title2).foregroundStyle(RahoTheme.amber)
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("Your journey").font(.headline)
+                                Text("Record your route · Share your location").font(.caption).foregroundStyle(RahoTheme.muted)
+                            }
+                            Spacer(); Image(systemName: "chevron.right").foregroundStyle(RahoTheme.muted)
+                        }
+                    }
+                }.buttonStyle(.plain)
 
                 RahoCard {
                     VStack(alignment: .leading, spacing: 16) {

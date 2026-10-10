@@ -41,6 +41,8 @@ targets:
         NSMicrophoneUsageDescription: Answer a short hands-free check-in. Microphone audio stays on this phone.
         NSSpeechRecognitionUsageDescription: Recognize a short driver acknowledgment using on-device speech where this language is supported.
         NSLocalNetworkUsageDescription: Connect to your Mac's Saarthi voice backend on the same network.
+        NSLocationWhenInUseUsageDescription: Record your journey while Saarthi is open and share your current location when you choose. Routes stay on this phone.
+        NSAppleMusicUsageDescription: Choose music from your library for your journey. Voice check-ins and alarms pause playback.
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
         UISupportedInterfaceOrientations:

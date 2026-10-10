@@ -19,6 +19,11 @@ struct BackendClient {
         let response: ConversationReply = try await json(request("v1/conversation", method: "POST", body: body))
         return response.text
     }
+    func companion(_ transcript: String, language: VoiceLanguage, assistant: String) async throws -> String {
+        let body = try JSONSerialization.data(withJSONObject: ["transcript": transcript, "language": language.rawValue, "assistant": assistant])
+        let response: ConversationReply = try await json(request("v1/companion", method: "POST", body: body))
+        return response.text
+    }
     func speech(_ text: String, language: VoiceLanguage) async throws -> Data {
         let body = try JSONSerialization.data(withJSONObject: ["text": text, "language": language.rawValue])
         let (data, response) = try await URLSession.shared.data(for: request("v1/voice", method: "POST", body: body))

@@ -22,7 +22,11 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
     private var listenGeneration = 0
     private var alarmActive = false
     private var interruptionObserver: NSObjectProtocol?
+    private var conversationReply: ((String) -> Void)?
+    private var conversationTimeout: Task<Void, Never>?
+    private var currentUtterance: AVSpeechUtterance?
     var onAcknowledgment: ((String) -> Void)?
+    var onWillSpeak: (() -> Void)?
 
     override init() {
         super.init(); synthesizer.delegate = self
@@ -58,6 +62,7 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
     }
     func playPrompt(_ name: String, language: VoiceLanguage, completion: (() -> Void)? = nil) {
         guard !alarmActive else { completion?(); return }
+        onWillSpeak?()
         stopListening(); cancelSpeech()
         self.completion = completion
         status = name == "checkin" ? "Checking in with you…" : "Speaking…"
@@ -69,6 +74,7 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
                 guard next.play() else { throw VoiceError.playback }
             } else {
                 let utterance = AVSpeechUtterance(string: language.text(for: name))
+                currentUtterance = utterance
                 utterance.voice = AVSpeechSynthesisVoice(language: language.locale)
                 utterance.rate = 0.47; synthesizer.speak(utterance)
             }
@@ -77,25 +83,35 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
             finishPlayback()
         }
     }
-    func playCloudAudio(_ data: Data) {
+    func playCloudAudio(_ data: Data, completion: (() -> Void)? = nil) {
         guard !alarmActive else { return }
+        onWillSpeak?()
         stopListening(); cancelSpeech()
+        self.completion = completion
         do {
             try configureAudio()
             let next = try AVAudioPlayer(data: data); next.delegate = self; player = next
-            if !next.play() { audioWarning = "Voice playback unavailable." }
+            if !next.play() { audioWarning = "Voice playback unavailable."; finishPlayback() }
             else { status = "Your co-pilot is speaking…" }
-        } catch { audioWarning = "Voice playback unavailable." }
+        } catch { audioWarning = "Voice playback unavailable."; finishPlayback() }
     }
     func listen(language: VoiceLanguage) {
+        startListening(language: language, conversation: nil)
+    }
+    func listenForConversation(language: VoiceLanguage, reply: @escaping (String) -> Void) {
+        startListening(language: language, conversation: reply)
+    }
+    private func startListening(language: VoiceLanguage, conversation: ((String) -> Void)?) {
         guard !alarmActive else { return }
         stopListening()
         guard offlineRecognitionAvailable,
               let recognizer = SFSpeechRecognizer(locale: Locale(identifier: language.locale)),
               recognizer.supportsOnDeviceRecognition, recognizer.isAvailable else {
             status = "Offline replies unavailable · alarm still active"
+            conversation?("")
             return
         }
+        conversationReply = conversation
         let generation = listenGeneration
         let audioRequest = SFSpeechAudioBufferRecognitionRequest()
         audioRequest.requiresOnDeviceRecognition = true
@@ -112,26 +128,56 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
             }
             tapInstalled = true
             engine.prepare(); try engine.start()
-            listening = true; status = "Listening · say ‘हाँ’ or ‘ਹਾਂ’"
+            listening = true; status = conversation == nil ? "Listening for your acknowledgment" : "Listening · speak to Ollie"
+            if conversation != nil {
+                conversationTimeout = Task { [weak self] in
+                    try? await Task.sleep(nanoseconds: 12_000_000_000)
+                    guard !Task.isCancelled else { return }
+                    self?.finishConversation()
+                }
+            }
             recognition = recognizer.recognitionTask(with: audioRequest) { [weak self] result, error in
                 Task { @MainActor in
                     guard let self, generation == self.listenGeneration else { return }
                     if let result {
                         self.transcript = result.bestTranscription.formattedString
-                        if language.acknowledges(self.transcript) {
+                        if self.conversationReply != nil {
+                            if result.isFinal { self.finishConversation() }
+                        } else if language.acknowledges(self.transcript) {
                             let text = self.transcript; self.stopListening(); self.onAcknowledgment?(text)
                         } else if result.isFinal { self.stopListening() }
                     }
                     if error != nil {
+                        if self.conversationReply != nil { self.finishConversation(); return }
                         self.stopListening(); self.status = "Could not hear a reply · checking your response"
                     }
                 }
             }
         } catch {
+            if conversationReply != nil { finishConversation(); return }
             stopListening(); status = "Microphone unavailable · alarm still active"
         }
     }
+    func finishConversation() {
+        let reply = conversationReply
+        let text = String(transcript.trimmingCharacters(in: .whitespacesAndNewlines).prefix(500))
+        stopListening(); reply?(text)
+    }
+    func speak(_ text: String, language: VoiceLanguage, completion: (() -> Void)? = nil) {
+        guard !alarmActive else { return }
+        onWillSpeak?(); stopListening(); cancelSpeech()
+        self.completion = completion
+        do {
+            try configureAudio()
+            let utterance = AVSpeechUtterance(string: text)
+            currentUtterance = utterance
+            utterance.voice = AVSpeechSynthesisVoice(language: language.locale)
+            utterance.rate = 0.47; status = "Ollie is speaking…"
+            synthesizer.speak(utterance)
+        } catch { audioWarning = "Voice playback unavailable."; finishPlayback() }
+    }
     func stopListening() {
+        conversationTimeout?.cancel(); conversationTimeout = nil; conversationReply = nil
         listenGeneration += 1
         recognition?.cancel(); recognition = nil
         request?.endAudio(); request = nil
@@ -141,6 +187,7 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
     }
     func startAlarm() {
         guard !alarmActive || alarm?.isPlaying != true else { return }
+        onWillSpeak?()
         alarmActive = true; stopListening(); cancelSpeech()
         status = "Stop somewhere safe and rest"
         do {
@@ -163,6 +210,7 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
     private func cancelSpeech() {
+        currentUtterance = nil
         completion = nil; player?.delegate = nil; player?.stop(); player = nil
         synthesizer.stopSpeaking(at: .immediate)
     }
@@ -178,7 +226,10 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
         }
     }
     nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        Task { @MainActor in self.finishPlayback() }
+        Task { @MainActor in
+            guard self.currentUtterance === utterance else { return }
+            self.currentUtterance = nil; self.finishPlayback()
+        }
     }
     private enum VoiceError: Error { case playback, microphone }
 }

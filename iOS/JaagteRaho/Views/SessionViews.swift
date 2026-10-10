@@ -96,6 +96,8 @@ struct DriveView: View {
     @ObservedObject var camera: CameraService
     @ObservedObject var voice: VoiceService
     let endSession: () -> Void
+    let showCompanion: () -> Void
+    let showJourney: () -> Void
 
     private var unavailable: Bool { model.paused || model.snapshot.state == .trackingUnavailable }
     private var checkingIn: Bool { model.snapshot.state == .checkIn }
@@ -139,6 +141,12 @@ struct DriveView: View {
                 if model.paused { NoticeView(message: "Monitoring is paused. Keep this app open in the foreground.") }
                 if let warning = voice.audioWarning { NoticeView(message: warning, color: RahoTheme.red) }
                 voiceCard
+                if !checkingIn && !unavailable {
+                    HStack(spacing: 12) {
+                        Button(action: showCompanion) { HStack { SaarthiMascot(size: 36); Text("Your co-pilot") } }
+                        Button(action: showJourney) { Label("Journey", systemImage: "map") }
+                    }.buttonStyle(RahoSecondaryButton())
+                }
                 metricGrid
                 RahoCard {
                     VStack(alignment: .leading, spacing: 12) {

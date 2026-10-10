@@ -20,12 +20,22 @@ final class DriveModel: ObservableObject {
         didSet { UserDefaults.standard.set(cloudEnabled, forKey: "cloudEnabled") }
     }
     @Published var serverURL: String
-    @Published private(set) var serverStatus: String = "Optional voice connection"
+    @Published private(set) var serverStatus: String = "Online voice not connected"
     @Published private(set) var fleetConfigured = false
     @Published private(set) var paused = false
     let camera = CameraService()
     let voice = VoiceService()
     let store = EventStore()
+    let journey = JourneyService()
+    let music = MusicService()
+    lazy var companion = CompanionService(voice: voice, backend: { [weak self] in self?.backend },
+        online: { [weak self] in self?.cloudEnabled ?? true },
+        language: { [weak self] in self?.language ?? .hindi },
+        available: { [weak self] in
+            guard let self else { return false }
+            return !self.paused && self.phase != .calibration &&
+                self.snapshot.state != .critical && self.snapshot.state != .checkIn
+        })
     private var engine: FatigueEngine?
     private var timer: Timer?
     private var demoTimer: Timer?
@@ -42,11 +52,19 @@ final class DriveModel: ObservableObject {
     }
     init() {
         language = VoiceLanguage(rawValue: UserDefaults.standard.string(forKey: "voiceLanguage") ?? "hi") ?? .hindi
-        cloudEnabled = UserDefaults.standard.bool(forKey: "cloudEnabled")
+        cloudEnabled = UserDefaults.standard.object(forKey: "cloudEnabled") as? Bool ?? true
         serverURL = UserDefaults.standard.string(forKey: "serverURL") ?? ""
         camera.onMetrics = { [weak self] metrics in self?.receive(metrics) }
         camera.onInterruption = { [weak self] in self?.markUnavailable() }
         voice.onAcknowledgment = { [weak self] text in self?.acknowledge(text) }
+        voice.onWillSpeak = { [weak self] in self?.music.pauseForVoice() }
+        #if DEBUG
+        if let url = ProcessInfo.processInfo.environment["SAARTHI_BACKEND_URL"],
+           let token = ProcessInfo.processInfo.environment["SAARTHI_BACKEND_TOKEN"], token.count >= 24 {
+            serverURL = url; pairingToken = token
+            Task { await connect(url: url, token: token) }
+        }
+        #endif
     }
     func startLive() {
         guard phase == .ready else { return }
@@ -63,6 +81,8 @@ final class DriveModel: ObservableObject {
         Task { await voice.requestPermissions(language: language) }
     }
     private func prepare(demo: Bool) {
+        companion.stop()
+        journey.startSession(simulated: demo)
         self.demo = demo; demoEyesClosed = false; paused = false; metrics = nil
         snapshot = FatigueSnapshot(); calibration = CalibrationCollector()
         criticalRecorded = false; tripStarted = nil; elapsed = 0; flushAt = 0
@@ -86,6 +106,7 @@ final class DriveModel: ObservableObject {
     }
     private func handleTransition(from before: MonitoringState) {
         if snapshot.state == .critical && before != .critical {
+            companion.interrupt(); journey.record(alarm: true)
             cloudTask?.cancel(); cloudTask = nil
             voice.startAlarm()
             if !criticalRecorded {
@@ -94,6 +115,7 @@ final class DriveModel: ObservableObject {
                 Task { await store.flush(using: backend) }
             }
         } else if snapshot.state == .checkIn && before != .checkIn && before != .trackingUnavailable {
+            companion.interrupt(); journey.record(checkIn: true)
             UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
             voice.playPrompt("checkin", language: language) { [weak self] in
                 guard let self, self.phase == .driving, !self.paused,
@@ -165,12 +187,14 @@ final class DriveModel: ObservableObject {
         if var engine { snapshot = engine.ingest(.missing(at: time)); self.engine = engine }
     }
     func suspend() {
+        journey.suspend(); companion.interrupt(); music.pauseForVoice()
         guard phase != .ready else { return }
         paused = true; markUnavailable(); camera.stop(); voice.stopListening()
         cloudTask?.cancel(); cloudTask = nil
         // Keep a critical event latched. Camera monitoring is explicitly unavailable in background.
     }
     func resume() {
+        journey.resume()
         guard phase != .ready, paused else { return }
         paused = false
         if !demo { camera.start() }
@@ -178,6 +202,7 @@ final class DriveModel: ObservableObject {
     }
     /// Called only from the parked/end-session confirmation.
     func endSession() {
+        companion.stop(); journey.endSession(); music.pauseForVoice()
         timer?.invalidate(); timer = nil; demoTimer?.invalidate(); demoTimer = nil
         cloudTask?.cancel(); cloudTask = nil
         camera.stop(); voice.stopAll(); engine = nil; metrics = nil
@@ -197,7 +222,7 @@ final class DriveModel: ObservableObject {
             pairingToken = token
             serverURL = url; UserDefaults.standard.set(url, forKey: "serverURL")
             fleetConfigured = status.fleetConfigured
-            serverStatus = status.conversationConfigured && status.speechConfigured ? "GPT-5-nano + Smallest connected" : "Connected · voice providers not configured"
+            serverStatus = status.speechConfigured ? "Smallest.ai online voice connected" : "Connected · speech provider not configured"
             await store.flush(using: candidate)
         } catch { serverStatus = "Could not connect. Check the Mac backend and Wi-Fi." }
     }

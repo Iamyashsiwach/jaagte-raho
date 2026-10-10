@@ -13,8 +13,28 @@ xcrun simctl boot "$JR_SIM_ID" >/dev/null 2>&1 || true
 xcrun simctl bootstatus "$JR_SIM_ID" -b
 xcodebuild -workspace iOS/JaagteRaho.xcworkspace -scheme JaagteRaho -configuration Debug \
   -destination "id=$JR_SIM_ID" -derivedDataPath build/DerivedData -jobs 2 \
-  CODE_SIGNING_ALLOWED=NO COMPILER_INDEX_STORE_ENABLE=NO build
+  CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- COMPILER_INDEX_STORE_ENABLE=NO build
 ./scripts/check-bundle.sh build/DerivedData/Build/Products/Debug-iphonesimulator/JaagteRaho.app
 xcrun simctl install "$JR_SIM_ID" build/DerivedData/Build/Products/Debug-iphonesimulator/JaagteRaho.app
-xcrun simctl launch "$JR_SIM_ID" com.jaagteraho.driver
-open -a Simulator
+if [ -f .env ] && command -v node >/dev/null 2>&1; then
+  node --env-file=.env --input-type=module - "$JR_SIM_ID" <<'JS'
+import {spawnSync} from 'node:child_process';
+const env = {...process.env};
+if ((process.env.APP_TOKEN ?? '').length >= 24) {
+  env.SIMCTL_CHILD_SAARTHI_BACKEND_URL = 'http://127.0.0.1:8787';
+  env.SIMCTL_CHILD_SAARTHI_BACKEND_TOKEN = process.env.APP_TOKEN;
+}
+const result = spawnSync('xcrun',['simctl','launch',process.argv[2],'com.jaagteraho.driver'],{env,stdio:'inherit'});
+process.exit(result.status ?? 1);
+JS
+else
+  xcrun simctl launch "$JR_SIM_ID" com.jaagteraho.driver
+fi
+JR_DEVELOPER_DIR="${DEVELOPER_DIR:-$(xcode-select -p)}"
+if [ -d "$JR_DEVELOPER_DIR/../Applications/DeviceHub.app" ]; then
+  open "$JR_DEVELOPER_DIR/../Applications/DeviceHub.app"
+elif [ -d "$JR_DEVELOPER_DIR/Applications/Simulator.app" ]; then
+  open "$JR_DEVELOPER_DIR/Applications/Simulator.app" --args -CurrentDeviceUDID "$JR_SIM_ID"
+else
+  printf '%s\n' 'App built, installed and launched. No simulator GUI was found in the selected Xcode installation; the simulator device is running headlessly.'
+fi
