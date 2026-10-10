@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+Secrets.xcconfig
+Local.xcconfig
+Pods/
+.build/
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.DS_Store
+server/data/
+server/node_modules/
+*.log

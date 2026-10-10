@@ -1,0 +1,151 @@
+# Jaagte Raho · जागते रहो
+
+**An iPhone drowsiness co-pilot that notices prolonged eye closure, checks in by voice, and escalates to an alarm.**
+
+Jaagte Raho means “Stay Awake.” This prototype uses the driver's dashboard-mounted iPhone rather than a dedicated fleet camera. Face analysis runs locally; Hindi, Punjabi, and English prompts are bundled for playback without mobile data. Optional GPT-5-nano conversation, Smallest.ai speech, and a fleet webhook sit behind a small server.
+
+**Project status:** native iOS MVP under active development. Physical-iPhone compilation, signing, camera behavior, speech support, and sustained performance still require verification. The first demonstration must take place while parked. This is a prototype with heuristic thresholds, not a validated driver-safety system.
+
+## What the MVP does
+
+- Front-camera face tracking with the bundled Google MediaPipe Face Landmarker model.
+- Parked calibration for the driver's open eyes, closed eyes, and neutral head position.
+- Time-based rules for eye closure, closure trends, repeated yawn candidates, and head-nod candidates.
+- A voice check-in after approximately **1.5 seconds** of continuous bilateral eye closure; a latched alarm after approximately **3 seconds**.
+- Short on-device speech acknowledgments when Apple's recognizer supports the selected language on that iPhone. Missing recognition support never disables the alarm.
+- Local event history and a persistent delivery queue that retries when a backend becomes reachable.
+- An explicitly labeled synthetic demo for screen demonstrations, separate from real camera monitoring.
+
+The alarm does not wait for an API request. A spoken response does not clear a critical event or prove that someone is safe to continue driving.
+
+## How it works
+
+```text
+iPhone front camera → MediaPipe → calibrated temporal engine
+                                      │
+                              bundled voice check-in
+                                      │
+                       continued closure / missed reply
+                                      │
+                                local alarm
+                                      │
+                         persistent event delivery queue
+                                      │ connectivity
+                         Node backend → fleet webhook
+
+Optional, after an accepted reply:
+short transcript → Node backend → GPT-5-nano → Smallest.ai → spoken follow-up
+```
+
+| Layer | Implementation |
+| --- | --- |
+| iPhone interface | Native SwiftUI; iOS 16 or later |
+| Camera | AVFoundation; 640 × 480 front-camera feed |
+| Face inference | MediaPipeTasksVision 0.10.35 via CocoaPods; bundled `.task` model |
+| Performance target | About 12 inference frames/second; late frames discarded; reduced rate during high thermal pressure |
+| Detection | Platform-independent Swift core, monotonic timestamps, frame-freshness checks |
+| Offline output | Bundled WAV prompts, local alarm, haptics |
+| Offline replies | Apple Speech with `requiresOnDeviceRecognition`; language/device dependent |
+| Optional online voice | OpenAI Responses API using `gpt-5-nano`; Smallest.ai TTS |
+| Persistence | Atomic JSON files on the phone and server; no database dependency |
+| Backend | Node.js 20.12+; built-in HTTP and fetch; no npm dependencies |
+
+See [architecture and current behavior](docs/ARCHITECTURE.md) and the [parked demo checklist](docs/DEMO.md). The earlier [technical proposal](TECHNICAL_PLAN.md) describes a Flutter alternative; this repository now prioritizes native iOS.
+
+## Run on an iPhone
+
+Prerequisites: a Mac with **full Xcode**, an attached trusted iPhone, enabled iPhone Developer Mode, an Apple signing team, XcodeGen, and CocoaPods. Command Line Tools alone cannot build or install the app.
+
+The project-generation and dependency scripts are being integrated with the MVP. Once available:
+
+```sh
+./scripts/bootstrap.sh
+open iOS/JaagteRaho.xcworkspace
+```
+
+In Xcode, select the JaagteRaho target, choose your signing team, select the connected iPhone, and run. Allow camera access for monitoring; microphone and speech permissions are needed only for voice replies. Use the app's voice test and calibrate while parked before starting a live session.
+
+The connected-device helper also supports a signed build and install:
+
+```sh
+TEAM_ID=YOUR_APPLE_TEAM_ID ./scripts/run-iphone.sh
+```
+
+The simulator can demonstrate the labeled replay flow. It cannot validate the physical front-camera pipeline, cabin noise, speech support, or thermal behavior.
+
+## Optional voice and fleet backend
+
+The app's detection, bundled prompts, and alarm do not require this service.
+
+1. Copy `.env.example` to `.env` in the repository root.
+2. Set `OPENAI_API_KEY` and `SMALLEST_API_KEY` locally. Provider keys stay on the Mac/server and are never entered into the iPhone app.
+3. Set `APP_TOKEN` to a random value of at least 24 characters. Use it as the iPhone's backend pairing token.
+4. Keep `HOST=127.0.0.1` for Mac-only testing. For an iPhone on the same Wi-Fi, set `HOST=0.0.0.0` and use your Mac's `.local` hostname in the app. Use HTTPS for a deployed service.
+5. Configure `FLEET_WEBHOOK_URL` only when a real recipient endpoint is available. It must use HTTPS; add `FLEET_WEBHOOK_TOKEN` if that endpoint requires authentication.
+
+```sh
+cp .env.example .env
+# Edit .env privately, then:
+cd server
+npm start
+```
+
+Pair the app with `http://your-mac-name.local:8787` for a local demonstration, or an HTTPS URL for a deployed service. The app stores the pairing token in iOS Keychain. Optional online voice is controlled separately in the app.
+
+To regenerate bundled speech with the Smallest.ai credits:
+
+```sh
+cd server
+npm run voices
+```
+
+This generator calls Smallest.ai at development time and writes WAV files into the app resources; playback of those files remains offline. Regeneration consumes voice credits. Neither provider keys nor `.env` belong in source control.
+
+### Backend endpoints
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/health` | Health check; no token required |
+| GET | `/v1/status` | Provider and fleet configuration status |
+| POST | `/v1/conversation` | Short follow-up from a recognized transcript |
+| POST | `/v1/voice` | WAV speech for a short text |
+| POST | `/v1/events` | Idempotent event ingestion by UUID |
+| GET | `/v1/events/:id` | Event delivery status |
+
+All `/v1` requests require `Authorization: Bearer <APP_TOKEN>`. Fleet events are stored locally on the server and retried with backoff. “Delivered” means the webhook returned a successful HTTP status; it does not establish that the owner read an alert. Synthetic demo events remain local and do not notify a fleet recipient.
+
+## Tests and validation
+
+The fatigue engine is a Swift package, so its temporal rules can be tested without Xcode or an iPhone:
+
+```sh
+swift test
+cd server
+npm test
+```
+
+From the repository root, `./scripts/check.sh` runs the integrated core, backend, and credential checks.
+
+The core tests cover closure escalation, acknowledgments, missing/stale frames, calibration, and timing. Backend tests cover authentication, event handling, provider failures, and fleet delivery. Automated tests establish behavior for those cases; physical-device recognition accuracy, alert audibility, battery use, inference latency, and heat still need measurement. See [the demo checklist](docs/DEMO.md) before presenting the live camera flow.
+
+## Repository layout
+
+```text
+iOS/JaagteRaho/        SwiftUI app, camera, services, core, bundled resources
+Tests/                Deterministic Swift core tests
+server/               Authenticated optional voice and fleet service
+scripts/              Toolchain, model, and Xcode project setup
+docs/                 Architecture and demo instructions
+Package.swift         Host-runnable Swift core package
+.env.example          Empty credential/configuration template
+```
+
+Branches: `main` for the shared baseline; `feat/ios-mvp` for integration; `feat/driver-dashboard` for interface work; `feat/voice-backend` for voice and fleet service work.
+
+## Privacy and operating limits
+
+Camera frames are processed locally and are not recorded or sent to the backend. Voice recognition explicitly requests on-device processing. With online voice enabled, only the short recognized reply is submitted for the follow-up; raw microphone audio is not uploaded by this app. Events contain identifiers, timestamps, trigger type, and delivery state.
+
+Monitoring requires the app to remain foregrounded. Backgrounding, stale frames, poor lighting, and lost face tracking are shown as unavailable rather than interpreted as an alert driver. Sunglasses, camera mounting, individual eye geometry, speaking, and cabin noise may affect the heuristic signals. The head-pitch estimate is a landmark-based proxy, not a validated gaze or fatigue measurement.
+
+Set up and test the phone while parked. Alerts support a safe stop and rest; conversation, coffee, or answering the app should never be treated as a cure for fatigue. iOS audio volume and routing still matter. A production release requires representative driver testing, accessibility work, reliability evaluation, and validated intervention thresholds.
