@@ -8,6 +8,8 @@ This prototype uses the driver's dashboard-mounted iPhone rather than a dedicate
 
 **Continuing on another Mac?** Read [context.txt](context.txt) for current state and immediate demo setup.
 
+**Building on your friend's iPhone?** Follow [HOW_TO_RUN.md](HOW_TO_RUN.md) for copy-and-paste setup, Apple signing, the private `.env`, online voice pairing and eye calibration.
+
 ## What the MVP does
 
 **New demo features:** Ollie, the owl companion; three-step onboarding; online Smallest.ai speech; hands-free turns, a short story and a voice quiz; music-library selection; opt-in GPS journey recording with saved route maps; timestamped location sharing; and a server-side custom assistant adapter. See [technical specs](docs/FEATURE_SPECS.md) and [another-Mac/iPhone setup](docs/FRIEND_SETUP.md). General AI conversation requires the existing OpenAI provider or a configured custom assistant; Smallest supplies speech.
