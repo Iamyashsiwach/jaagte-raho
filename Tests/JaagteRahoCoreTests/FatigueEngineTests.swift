@@ -168,6 +168,55 @@ final class FatigueEngineTests: XCTestCase {
         engine.ingest(sample(0))
         XCTAssertEqual(engine.snapshot.state, .idle)
     }
+    func testEnrollmentReadyRequiresFreshOpenEyes() {
+        XCTAssertTrue(DriverCalibration.demo.readyToMonitor(sample(10), at: 10.2))
+        XCTAssertFalse(DriverCalibration.demo.readyToMonitor(sample(10), at: 11))
+        XCTAssertFalse(DriverCalibration.demo.readyToMonitor(sample(11), at: 10))
+        XCTAssertFalse(DriverCalibration.demo.readyToMonitor(sample(10), at: .nan))
+        XCTAssertFalse(DriverCalibration.demo.readyToMonitor(nil, at: 10))
+        XCTAssertFalse(DriverCalibration.demo.readyToMonitor(.missing(at: 10), at: 10))
+        XCTAssertFalse(DriverCalibration.demo.readyToMonitor(sample(10, closed: true), at: 10))
+        var oneEye = sample(10)
+        oneEye.leftEAR = 0.05
+        XCTAssertFalse(DriverCalibration.demo.readyToMonitor(oneEye, at: 10))
+        var dim = sample(10)
+        dim.illumination = 0.01
+        XCTAssertFalse(DriverCalibration.demo.readyToMonitor(dim, at: 10))
+    }
+    func testSpeechTurnEndsAfterSpeechPauseAndBoundsSilentRecording() {
+        var turn = SpeechTurnDetector(startedAt: 0)
+        XCTAssertFalse(turn.shouldFinish(decibels: -80, at: 1))
+        XCTAssertFalse(turn.shouldFinish(decibels: -20, at: 2))
+        XCTAssertFalse(turn.shouldFinish(decibels: -80, at: 3))
+        XCTAssertTrue(turn.shouldFinish(decibels: -80, at: 3.3))
+        var silence = SpeechTurnDetector(startedAt: 0)
+        XCTAssertFalse(silence.shouldFinish(decibels: -80, at: 11))
+        XCTAssertTrue(silence.shouldFinish(decibels: -80, at: 12))
+    }
+    func testSpeechTurnContinuousSpeechKeepsListeningUntilBound() {
+        var turn = SpeechTurnDetector(startedAt: 0)
+        for i in 0..<12 { XCTAssertFalse(turn.shouldFinish(decibels: -20, at: Double(i))) }
+        XCTAssertFalse(turn.shouldFinish(decibels: -.infinity, at: 11.5))
+        XCTAssertFalse(turn.shouldFinish(decibels: -80, at: .nan))
+        XCTAssertTrue(turn.shouldFinish(decibels: -20, at: 12))
+    }
+    func testEnrollmentDoesNotCarryClosedEyeSecondsIntoMonitoring() {
+        var collector = CalibrationCollector()
+        for i in 0..<40 { collector.ingest(sample(Double(i) * 0.1)) }
+        XCTAssertFalse(collector.eyesClosed(sample(4)))
+        XCTAssertTrue(collector.eyesClosed(sample(4, closed: true)))
+        for i in 40..<65 { collector.ingest(sample(Double(i) * 0.1, closed: true)) }
+        XCTAssertEqual(collector.phase, .complete)
+        XCTAssertTrue(collector.result != nil)
+        guard let baseline = collector.result else { return }
+        XCTAssertFalse(baseline.readyToMonitor(sample(6.4, closed: true), at: 6.4))
+        let open = sample(6.5)
+        XCTAssertTrue(baseline.readyToMonitor(open, at: 6.5))
+        var detector = FatigueEngine(calibration: baseline)
+        detector.ingest(open)
+        XCTAssertEqual(detector.snapshot.state, .monitoring)
+        XCTAssertEqual(detector.snapshot.closureSeconds, 0)
+    }
     func testNoPromptCallbackStillEscalatesAtWatchdogDeadline() {
         var engine = FatigueEngine(calibration: .demo)
         feed(&engine, from: 0, count: 17, closed: true)

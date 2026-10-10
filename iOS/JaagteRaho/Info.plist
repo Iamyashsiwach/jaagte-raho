@@ -34,7 +34,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Record your journey while Saarthi is open and share your current location when you choose. Routes stay on this phone.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Answer a short hands-free check-in. Microphone audio stays on this phone.</string>
+	<string>Talk to Ollie and answer check-ins. Online companion turns send a short recording to Smallest.ai for transcription; offline check-ins stay on this phone.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Recognize a short driver acknowledgment using on-device speech where this language is supported.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

@@ -3,7 +3,7 @@ import {timingSafeEqual} from 'node:crypto';
 import {mkdir, readdir, readFile, rename, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {conversation, voice, customAssistant} from './providers.mjs';
+import {conversation, voice, customAssistant, electron, transcribe} from './providers.mjs';
 
 function send(res, status, payload) {
   res.writeHead(status, {'Content-Type': 'application/json', 'Cache-Control': 'no-store'});
@@ -14,14 +14,15 @@ function authorized(req, token) {
   const expected = Buffer.from(`Bearer ${token}`);
   return token.length >= 24 && actual.length === expected.length && timingSafeEqual(actual, expected);
 }
-async function body(req) {
+async function body(req, maximum = 8192, json = true) {
   let bytes = 0, parts = [];
   for await (const part of req) {
     bytes += part.length;
-    if (bytes > 8192) throw new Error('Request too large');
+    if (bytes > maximum) throw new Error('Request too large');
     parts.push(part);
   }
-  return JSON.parse(Buffer.concat(parts).toString('utf8'));
+  const data = Buffer.concat(parts);
+  return json ? JSON.parse(data.toString('utf8')) : data;
 }
 const languages = new Set(['hi', 'pa', 'en']);
 const triggers = new Set(['prolongedClosure', 'closureTrend', 'repeatedYawns', 'repeatedNods', 'noResponse']);
@@ -84,8 +85,9 @@ export async function createApp(config) {
       if (req.method === 'GET' && url.pathname === '/health') return send(res, 200, {ok: true});
       if (!authorized(req, token)) return send(res, 401, {error: 'Unauthorized'});
       if (req.method === 'GET' && url.pathname === '/v1/status') return send(res, 200, {
-        conversationConfigured: Boolean(openAIKey), speechConfigured: Boolean(smallestKey),
-        fleetConfigured: Boolean(fleetURL), customAssistantConfigured: Boolean(assistantURL), model});
+        conversationConfigured: Boolean(smallestKey || openAIKey), speechConfigured: Boolean(smallestKey),
+        transcriptionConfigured: Boolean(smallestKey), transcriptionLanguages:['hi','en'],
+        fleetConfigured: Boolean(fleetURL), customAssistantConfigured: Boolean(assistantURL), model:smallestKey ? 'electron' : model});
       const ip = req.socket.remoteAddress, now = Date.now();
       const bucket = limits.get(ip);
       if (!bucket || now - bucket.start > 60000) limits.set(ip, {start: now, count: 1});
@@ -98,8 +100,18 @@ export async function createApp(config) {
         return send(res, event ? 200 : 404, event ? {id, delivery: event.delivery, simulated: event.simulated} : {error: 'Event not found'});
       }
       if (req.method !== 'POST') return send(res, 404, {error: 'Not found'});
+      if (url.pathname === '/v1/transcribe') {
+        const language = url.searchParams.get('language');
+        if (!['hi','en'].includes(language)) return send(res,400,{error:'Pulse voice input supports Hindi and English; use Apple recognition for Punjabi'});
+        if (req.headers['content-type']?.split(';')[0] !== 'audio/wav') return send(res,400,{error:'Send a WAV recording'});
+        const audio = await body(req,512000,false);
+        if (audio.length < 44 || audio.toString('ascii',0,4) !== 'RIFF' || audio.toString('ascii',8,12) !== 'WAVE')
+          return send(res,400,{error:'Invalid recording'});
+        const transcript = await transcribe({key:smallestKey,audio,language,fetcher});
+        return send(res,200,{text:transcript,provider:'smallest-pulse'});
+      }
       if (!['/v1/conversation', '/v1/companion', '/v1/voice', '/v1/events'].includes(url.pathname)) return send(res, 404, {error: 'Not found'});
-      const input = await body(req);
+      const input = await body(req,url.pathname === '/v1/companion' ? 16384 : 8192);
       if (!input || typeof input !== 'object' || Array.isArray(input)) return send(res, 400, {error: 'Request must be an object'});
       if (url.pathname === '/v1/events') {
         if (!uuid.test(input.id ?? '') || !triggers.has(input.trigger) ||
@@ -121,10 +133,15 @@ export async function createApp(config) {
         if (typeof input.transcript !== 'string' || !input.transcript.trim() || input.transcript.length > 500)
           return send(res, 400, {error: 'Invalid transcript'});
         if (url.pathname === '/v1/companion' && !['saarthi','custom'].includes(input.assistant)) return send(res,400,{error:'Unsupported assistant'});
+        const history = input.history ?? [];
+        if (!Array.isArray(history) || history.length > 6 || history.some(turn => !turn ||
+            !['user','assistant'].includes(turn.role) || typeof turn.content !== 'string' || turn.content.length > 600))
+          return send(res,400,{error:'Invalid conversation history'});
         const text = url.pathname === '/v1/companion' && input.assistant === 'custom'
           ? await customAssistant({url:assistantURL,token:assistantToken,transcript:input.transcript,language:input.language,fetcher})
+          : smallestKey ? await electron({key:smallestKey,transcript:input.transcript,language:input.language,history,companion:url.pathname === '/v1/companion',fetcher})
           : await conversation({key: openAIKey, model, transcript: input.transcript, language: input.language, companion:url.pathname === '/v1/companion', fetcher});
-        return send(res, 200, {text});
+        return send(res, 200, {text,provider:input.assistant === 'custom' ? 'custom' : smallestKey ? 'smallest-electron' : 'openai'});
       }
       if (typeof input.text !== 'string' || !input.text.trim() || input.text.length > 600)
         return send(res, 400, {error: 'Invalid speech text'});

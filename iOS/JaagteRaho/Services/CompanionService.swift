@@ -12,7 +12,7 @@ final class CompanionService: ObservableObject {
     @Published private(set) var messages: [CompanionMessage] = []
     @Published private(set) var busy = false
     @Published private(set) var source = "Ready to talk · online voice preferred"
-    @Published private(set) var conversationSource = "Stories and quizzes ready · connect an agent for open conversation"
+    @Published private(set) var conversationSource = "Ollie online agent · Smallest.ai Electron when paired"
     @Published var handsFree = false
     @Published var assistant = "saarthi" {
         didSet { UserDefaults.standard.set(assistant, forKey: "companionAssistant") }
@@ -38,15 +38,53 @@ final class CompanionService: ObservableObject {
         guard available(), !busy else { return }
         generation += 1
         let current = generation
-        task?.cancel()
+        task?.cancel(); busy = true
         task = Task { [weak self] in
             guard let self else { return }
+            let selectedLanguage = self.language()
+            if self.online(), let backend = self.backend(), selectedLanguage != .punjabi {
+                self.source = "Preparing microphone · Smallest.ai Pulse"
+                let allowed = await self.voice.requestMicrophonePermission()
+                guard !Task.isCancelled, current == self.generation, self.available() else { return }
+                self.busy = false
+                guard allowed else {
+                    self.handsFree = false; self.source = "Allow Microphone in iPhone Settings to talk to Ollie"; return
+                }
+                self.source = "Listening · speak now · Smallest.ai Pulse"
+                self.voice.recordForConversation { [weak self] audio in
+                    guard let self, current == self.generation, self.available() else { return }
+                    guard let audio else {
+                        self.handsFree = false; self.source = "Could not record your voice · check microphone and try again"; return
+                    }
+                    self.transcribe(audio, backend: backend, language: selectedLanguage, generation: current)
+                }
+                return
+            }
             await self.voice.requestPermissions(language: self.language())
             guard !Task.isCancelled, current == self.generation, self.available() else { return }
-            self.voice.listenForConversation(language: self.language()) { [weak self] text in
+            self.busy = false
+            self.source = selectedLanguage == .punjabi && self.online() ? "Listening · Apple Punjabi recognition" : "Listening · device speech"
+            self.voice.listenForConversation(language: selectedLanguage, allowNetwork: self.online()) { [weak self] text in
                 guard let self, current == self.generation, self.available() else { return }
-                if text.isEmpty { self.handsFree = false; self.source = "Could not hear a reply · type or try again" }
+                if text.isEmpty { self.handsFree = false; self.source = "Could not hear you · choose Hindi or English for Smallest listening" }
                 else { self.send(text) }
+            }
+        }
+    }
+    private func transcribe(_ audio: Data, backend: BackendClient, language: VoiceLanguage, generation current: Int) {
+        busy = true; source = "Transcribing your reply · Smallest.ai Pulse"
+        task = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let text = try await backend.transcribe(audio, language: language)
+                guard !Task.isCancelled, current == self.generation, self.available() else { return }
+                self.busy = false
+                if text.isEmpty { self.handsFree = false; self.source = "No speech heard · speak closer to the phone and try again" }
+                else { self.send(text) }
+            } catch {
+                guard !Task.isCancelled, current == self.generation, self.available() else { return }
+                self.busy = false; self.handsFree = false
+                self.source = "Online listening failed · restart the updated backend and check the voice connection"
             }
         }
     }
@@ -56,7 +94,8 @@ final class CompanionService: ObservableObject {
         guard !text.isEmpty else { return }
         messages.append(.init(text: text, driver: true))
         let lower = text.lowercased()
-        if ["stop", "quiet", "चुप", "रुको", "ਰੁਕੋ"].contains(where: { lower.contains($0) }) { stop(); return }
+        let command = lower.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        if ["stop", "stop talking", "quiet", "be quiet", "चुप", "रुको", "ਰੁਕੋ"].contains(command) { stop(); return }
         if quizPending {
             quizPending = false; say(CompanionContent.quizReply(text, language: language())); return
         }
@@ -70,8 +109,11 @@ final class CompanionService: ObservableObject {
             var reply = CompanionContent.reply(text, language: selectedLanguage)
             if self.online(), let backend = self.backend() {
                 do {
-                    reply = try await backend.companion(text, language: selectedLanguage, assistant: self.assistant)
-                    self.conversationSource = self.assistant == "custom" ? "Connected assistant" : "Ollie voice agent"
+                    let history = self.messages.dropLast().suffix(6).map { ["role": $0.driver ? "user" : "assistant", "content": $0.text] }
+                    let response = try await backend.companion(text, language: selectedLanguage, assistant: self.assistant, history: history)
+                    reply = response.text
+                    self.conversationSource = response.provider == "smallest-electron" ? "Ollie agent · Smallest.ai Electron"
+                        : self.assistant == "custom" ? "Connected assistant" : "Ollie online agent"
                 }
                 catch { self.conversationSource = "Scripted reply · conversation agent not available" }
             }
@@ -110,6 +152,7 @@ final class CompanionService: ObservableObject {
     func stop() {
         generation += 1; task?.cancel(); task = nil
         handsFree = false; quizPending = false; busy = false
+        source = "Ready to talk · online voice preferred"
         if available() { voice.stopAll() } else { voice.stopListening() }
     }
     /// Detection prompts and the alarm always interrupt entertainment.

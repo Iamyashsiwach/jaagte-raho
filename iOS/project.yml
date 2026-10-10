@@ -38,7 +38,7 @@ targets:
       properties:
         CFBundleDisplayName: Saarthi
         NSCameraUsageDescription: Saarthi watches eye closure on this phone to detect possible drowsiness. Camera frames are not recorded or uploaded.
-        NSMicrophoneUsageDescription: Answer a short hands-free check-in. Microphone audio stays on this phone.
+        NSMicrophoneUsageDescription: Talk to Ollie and answer check-ins. Online companion turns send a short recording to Smallest.ai for transcription; offline check-ins stay on this phone.
         NSSpeechRecognitionUsageDescription: Recognize a short driver acknowledgment using on-device speech where this language is supported.
         NSLocalNetworkUsageDescription: Connect to your Mac's Saarthi voice backend on the same network.
         NSLocationWhenInUseUsageDescription: Record your journey while Saarthi is open and share your current location when you choose. Routes stay on this phone.

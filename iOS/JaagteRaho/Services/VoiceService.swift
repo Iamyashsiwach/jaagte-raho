@@ -25,6 +25,11 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
     private var conversationReply: ((String) -> Void)?
     private var conversationTimeout: Task<Void, Never>?
     private var currentUtterance: AVSpeechUtterance?
+    private var recording: AVAudioRecorder?
+    private var recordingURL: URL?
+    private var recordingReply: ((Data?) -> Void)?
+    private var recordingTimer: Timer?
+    private var speechTurn: SpeechTurnDetector?
     var onAcknowledgment: ((String) -> Void)?
     var onWillSpeak: (() -> Void)?
 
@@ -53,6 +58,54 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
         let recognizer = SFSpeechRecognizer(locale: Locale(identifier: language.locale))
         offlineRecognitionAvailable = auth == .authorized && mic && recognizer?.supportsOnDeviceRecognition == true
         status = offlineRecognitionAvailable ? "Offline voice replies ready" : "Voice alerts ready · offline replies unavailable"
+    }
+    func requestMicrophonePermission() async -> Bool {
+        await withCheckedContinuation { continuation in
+            AVAudioSession.sharedInstance().requestRecordPermission { continuation.resume(returning: $0) }
+        }
+    }
+    /// Online conversation uses a short WAV turn instead of depending on Apple Speech.
+    func recordForConversation(reply: @escaping (Data?) -> Void) {
+        guard !alarmActive else { return }
+        stopListening(); cancelSpeech(); onWillSpeak?()
+        do {
+            try configureAudio()
+            let url = FileManager.default.temporaryDirectory.appendingPathComponent("ollie-\(UUID().uuidString).wav")
+            recordingURL = url
+            let next = try AVAudioRecorder(url: url, settings: [
+                AVFormatIDKey: kAudioFormatLinearPCM, AVSampleRateKey: 16000,
+                AVNumberOfChannelsKey: 1, AVLinearPCMBitDepthKey: 16,
+                AVLinearPCMIsFloatKey: false, AVLinearPCMIsBigEndianKey: false
+            ])
+            next.isMeteringEnabled = true
+            guard next.record(forDuration: 12) else { throw VoiceError.microphone }
+            try? FileManager.default.setAttributes([.protectionKey: FileProtectionType.complete], ofItemAtPath: url.path)
+            recording = next; recordingReply = reply
+            speechTurn = SpeechTurnDetector(startedAt: ProcessInfo.processInfo.systemUptime)
+            listening = true; transcript = ""; status = "Listening · Smallest.ai Pulse"
+            recordingTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+                Task { @MainActor in
+                    guard let self, let recorder = self.recording else { return }
+                    recorder.updateMeters()
+                    if !recorder.isRecording || self.speechTurn?.shouldFinish(
+                        decibels: recorder.averagePower(forChannel: 0), at: ProcessInfo.processInfo.systemUptime) == true {
+                        self.finishOnlineCapture()
+                    }
+                }
+            }
+        } catch {
+            stopListening(); audioWarning = "Microphone unavailable. Allow Microphone in iPhone Settings and try again."
+            reply(nil)
+        }
+    }
+    private func finishOnlineCapture() {
+        guard let recorder = recording, let url = recordingURL else { return }
+        let reply = recordingReply
+        recorder.stop()
+        let audio = try? Data(contentsOf: url)
+        stopListening()
+        status = "Transcribing · Smallest.ai Pulse"
+        reply?(audio.flatMap { $0.count > 44 && $0.count <= 512000 ? $0 : nil })
     }
     private func configureAudio() throws {
         let session = AVAudioSession.sharedInstance()
@@ -98,23 +151,24 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
     func listen(language: VoiceLanguage) {
         startListening(language: language, conversation: nil)
     }
-    func listenForConversation(language: VoiceLanguage, reply: @escaping (String) -> Void) {
-        startListening(language: language, conversation: reply)
+    func listenForConversation(language: VoiceLanguage, allowNetwork: Bool = false, reply: @escaping (String) -> Void) {
+        startListening(language: language, conversation: reply, allowNetwork: allowNetwork)
     }
-    private func startListening(language: VoiceLanguage, conversation: ((String) -> Void)?) {
+    private func startListening(language: VoiceLanguage, conversation: ((String) -> Void)?, allowNetwork: Bool = false) {
         guard !alarmActive else { return }
         stopListening()
-        guard offlineRecognitionAvailable,
-              let recognizer = SFSpeechRecognizer(locale: Locale(identifier: language.locale)),
-              recognizer.supportsOnDeviceRecognition, recognizer.isAvailable else {
-            status = "Offline replies unavailable · alarm still active"
+        guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: language.locale)),
+              recognizer.isAvailable, SFSpeechRecognizer.authorizationStatus() == .authorized,
+              AVAudioSession.sharedInstance().recordPermission == .granted,
+              allowNetwork || offlineRecognitionAvailable && recognizer.supportsOnDeviceRecognition else {
+            status = "Speech recognition unavailable · try Hindi or English online"
             conversation?("")
             return
         }
         conversationReply = conversation
         let generation = listenGeneration
         let audioRequest = SFSpeechAudioBufferRecognitionRequest()
-        audioRequest.requiresOnDeviceRecognition = true
+        audioRequest.requiresOnDeviceRecognition = !allowNetwork
         audioRequest.shouldReportPartialResults = true
         audioRequest.contextualStrings = ["हाँ", "ठीक है", "ਹਾਂ", "ਠੀਕ ਹੈ", "yes", "okay"]
         request = audioRequest; transcript = ""
@@ -159,6 +213,7 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
         }
     }
     func finishConversation() {
+        if recording != nil { finishOnlineCapture(); return }
         let reply = conversationReply
         let text = String(transcript.trimmingCharacters(in: .whitespacesAndNewlines).prefix(500))
         stopListening(); reply?(text)
@@ -177,6 +232,10 @@ final class VoiceService: NSObject, ObservableObject, AVAudioPlayerDelegate, AVS
         } catch { audioWarning = "Voice playback unavailable."; finishPlayback() }
     }
     func stopListening() {
+        recordingTimer?.invalidate(); recordingTimer = nil
+        recording?.stop(); recording = nil; recordingReply = nil; speechTurn = nil
+        if let recordingURL { try? FileManager.default.removeItem(at: recordingURL) }
+        recordingURL = nil
         conversationTimeout?.cancel(); conversationTimeout = nil; conversationReply = nil
         listenGeneration += 1
         recognition?.cancel(); recognition = nil

@@ -12,7 +12,7 @@ The demonstration shows a heuristic signal and the resulting intervention. It do
 
 ## Real camera demonstration
 
-1. Start live monitoring and follow the parked calibration: open eyes for approximately three stable seconds, then close them for approximately two seconds.
+1. Tap **Set up my eyes with Ollie** on Home and confirm that you are parked. Follow Ollie's spoken calibration: open eyes for approximately three stable seconds, then close them for approximately two seconds. At **Eye setup complete**, open both eyes and tap **Start monitoring with Ollie**; the button requires fresh open-eye tracking.
 2. Wait for the monitoring state, then keep the eyes normally open. Ordinary brief blinks should not trigger a check-in.
 3. Close both eyes continuously. At roughly 1.5 seconds, a bundled voice prompt should begin.
 4. Keep both eyes closed. At roughly 3 seconds, the alarm should interrupt the prompt and remain latched.

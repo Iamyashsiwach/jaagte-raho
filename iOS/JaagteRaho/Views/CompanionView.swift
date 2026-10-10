@@ -50,8 +50,11 @@ struct CompanionView: View {
                                         .font(.caption).foregroundStyle(RahoTheme.muted)
                                 }
                                 Toggle("Online voice · Smallest.ai", isOn: $model.cloudEnabled).tint(RahoTheme.mint)
+                                LanguageSelector(language: $model.language)
                                 Toggle("Hands-free turns", isOn: $companion.handsFree).tint(RahoTheme.mint)
                                 Text("After each response, Ollie listens for your next turn. Say ‘stop’ to finish. Check-ins and alarms interrupt conversation.")
+                                    .font(.caption).foregroundStyle(RahoTheme.muted)
+                                Text("Hindi and English online turns send a short microphone recording to Smallest.ai Pulse. Ollie replies using Electron and Lightning. Punjabi uses Apple recognition. Camera frames stay on your phone.")
                                     .font(.caption).foregroundStyle(RahoTheme.muted)
                             }
                         }

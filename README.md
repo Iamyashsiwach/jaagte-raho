@@ -2,7 +2,7 @@
 
 **An iPhone drowsiness co-pilot that notices prolonged eye closure, checks in by voice, and escalates to an alarm.**
 
-This prototype uses the driver's dashboard-mounted iPhone rather than a dedicated fleet camera. Face analysis runs locally; Hindi, Punjabi, and English prompts are bundled for playback without mobile data. Optional GPT-5-nano conversation, Smallest.ai speech, and a fleet webhook sit behind a small server.
+This prototype uses the driver's dashboard-mounted iPhone rather than a dedicated fleet camera. Face analysis runs locally; Hindi, Punjabi, and English alerts are bundled for playback without mobile data. Online Ollie uses Smallest.ai Pulse transcription, Electron conversation and Lightning speech through a small paired server. The same Smallest key powers all three stages; OpenAI is an optional alternative. Fleet delivery uses a configured webhook.
 
 **Project status:** native iOS MVP builds with full Xcode and real MediaPipe, and has been signed, installed, and launched on an iPhone 14. Live camera startup, video-frame delivery, and face inference have been verified on that phone after fixing permission-dialog lifecycle handling. The dashboard also runs visibly on the iPhone 17 simulator in Xcode 27's Device Hub, with backend voice pairing connected. Recognition accuracy, speech support, and sustained performance still require acceptance checks. The first demonstration must take place while parked. This is a prototype with heuristic thresholds, not a validated driver-safety system.
 
@@ -12,7 +12,7 @@ This prototype uses the driver's dashboard-mounted iPhone rather than a dedicate
 
 ## What the MVP does
 
-**New demo features:** Ollie, the owl companion; three-step onboarding; online Smallest.ai speech; hands-free turns, a short story and a voice quiz; music-library selection; opt-in GPS journey recording with saved route maps; timestamped location sharing; and a server-side custom assistant adapter. See [technical specs](docs/FEATURE_SPECS.md) and [another-Mac/iPhone setup](docs/FRIEND_SETUP.md). General AI conversation requires the existing OpenAI provider or a configured custom assistant; Smallest supplies speech.
+**New demo features:** Ollie, the owl companion; four-step onboarding leading into spoken eye enrollment; Smallest.ai listening, AI replies and speech; hands-free turns, a short story and a voice quiz; music-library selection; opt-in GPS journey recording with saved route maps; timestamped location sharing; and a server-side custom assistant adapter. Home puts eye setup first. See [technical specs](docs/FEATURE_SPECS.md) and [another-Mac/iPhone setup](docs/FRIEND_SETUP.md). Smallest alone powers general AI conversation through Electron.
 
 - Front-camera face tracking with the bundled Google MediaPipe Face Landmarker model.
 - Parked calibration for the driver's open eyes, closed eyes, and neutral head position.
@@ -52,7 +52,7 @@ short transcript → Node backend → GPT-5-nano → Smallest.ai → spoken foll
 | Detection | Platform-independent Swift core, monotonic timestamps, frame-freshness checks |
 | Offline output | Bundled WAV prompts, local alarm, haptics |
 | Offline replies | Apple Speech with `requiresOnDeviceRecognition`; language/device dependent |
-| Optional online voice | OpenAI Responses API using `gpt-5-nano`; Smallest.ai TTS |
+| Online Ollie | Smallest Pulse (Hindi/English input), Electron replies, Lightning TTS; Punjabi uses Apple input |
 | Persistence | Atomic JSON files on the phone and server; no database dependency |
 | Backend | Node.js 20.12+; built-in HTTP and fetch; no npm dependencies |
 
@@ -86,7 +86,7 @@ The simulator can demonstrate the labeled replay flow. It cannot validate the ph
 The app's detection, bundled prompts, and alarm do not require this service.
 
 1. Copy `.env.example` to `.env` in the repository root.
-2. Set `OPENAI_API_KEY` and `SMALLEST_API_KEY` locally. Provider keys stay on the Mac/server and are never entered into the iPhone app.
+2. Set `SMALLEST_API_KEY` locally for Pulse, Electron and Lightning. `OPENAI_API_KEY` is optional. Provider keys stay on the Mac/server and are never entered into the iPhone app.
 3. Set `APP_TOKEN` to a random value of at least 24 characters. Use it as the iPhone's backend pairing token.
 4. Keep `HOST=127.0.0.1` for Mac-only testing. For an iPhone on the same Wi-Fi, set `HOST=0.0.0.0` and use your Mac's `.local` hostname in the app. Use HTTPS for a deployed service.
 5. Configure `FLEET_WEBHOOK_URL` only when a real recipient endpoint is available. It must use HTTPS; add `FLEET_WEBHOOK_TOKEN` if that endpoint requires authentication.
@@ -154,7 +154,7 @@ All demo development is on `main`.
 
 ## Privacy and operating limits
 
-Camera frames are processed locally and are not recorded or sent to the backend. Voice recognition explicitly requests on-device processing. With online voice enabled, only the short recognized reply is submitted for the follow-up; raw microphone audio is not uploaded by this app. Events contain identifiers, timestamps, trigger type, and delivery state.
+Camera frames are processed locally and are not recorded or sent to the backend. Offline detection acknowledgments use on-device recognition. Online Hindi/English companion turns send a short WAV recording through the backend to Smallest Pulse; temporary phone files are deleted after completion/cancellation, and the backend stores no recordings. Punjabi online companion input uses Apple recognition. Conversation sends short text and a bounded history. Events contain identifiers, timestamps, trigger type, and delivery state.
 
 Monitoring requires the app to remain foregrounded. Backgrounding, stale frames, poor lighting, and lost face tracking are shown as unavailable rather than interpreted as an alert driver. Sunglasses, camera mounting, individual eye geometry, speaking, and cabin noise may affect the heuristic signals. The head-pitch estimate is a landmark-based proxy, not a validated gaze or fatigue measurement.
 

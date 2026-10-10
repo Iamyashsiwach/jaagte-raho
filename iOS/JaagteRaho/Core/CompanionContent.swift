@@ -1,6 +1,19 @@
 import Foundation
 
 public enum CompanionContent {
+    public static func enrollment(_ step: CalibrationCollector.Phase, language: VoiceLanguage) -> String {
+        switch (step, language) {
+        case (.openEyes, .hindi): return "गाड़ी खड़ी रखें। फ़ोन की तरफ़ देखें और दोनों आँखें तीन सेकंड खुली रखें।"
+        case (.closedEyes, .hindi): return "अब गाड़ी खड़ी रखते हुए दोनों आँखें धीरे से दो सेकंड बंद करें।"
+        case (.complete, .hindi): return "आँखों की तैयारी पूरी हुई। आँखें खोलें, फिर निगरानी शुरू करने का बटन दबाएँ।"
+        case (.openEyes, .punjabi): return "ਗੱਡੀ ਖੜ੍ਹੀ ਰੱਖੋ। ਫ਼ੋਨ ਵੱਲ ਵੇਖੋ ਤੇ ਦੋਵੇਂ ਅੱਖਾਂ ਤਿੰਨ ਸਕਿੰਟ ਖੁੱਲ੍ਹੀਆਂ ਰੱਖੋ।"
+        case (.closedEyes, .punjabi): return "ਹੁਣ ਗੱਡੀ ਖੜ੍ਹੀ ਰੱਖਦੇ ਹੋਏ ਦੋਵੇਂ ਅੱਖਾਂ ਹੌਲੀ ਜਿਹੇ ਦੋ ਸਕਿੰਟ ਬੰਦ ਕਰੋ।"
+        case (.complete, .punjabi): return "ਅੱਖਾਂ ਦੀ ਤਿਆਰੀ ਪੂਰੀ ਹੈ। ਅੱਖਾਂ ਖੋਲ੍ਹੋ, ਫਿਰ ਨਿਗਰਾਨੀ ਸ਼ੁਰੂ ਕਰਨ ਵਾਲਾ ਬਟਨ ਦਬਾਓ।"
+        case (.openEyes, .english): return "Stay parked. Look at the phone with both eyes open for three seconds."
+        case (.closedEyes, .english): return "Now, while parked, gently close both eyes for two seconds."
+        case (.complete, .english): return "Your eye setup is complete. Open your eyes, then tap Start monitoring."
+        }
+    }
     public static func greeting(_ language: VoiceLanguage) -> String {
         switch language {
         case .hindi: return "नमस्ते भाई, मैं ओली हूँ। तुम्हारे सफ़र का साथी। बात करें, कहानी सुनें या छोटा सा क्विज़ खेलें?"

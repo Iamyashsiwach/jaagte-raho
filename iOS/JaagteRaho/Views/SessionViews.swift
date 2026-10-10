@@ -7,27 +7,39 @@ struct CalibrationView: View {
     let endSession: () -> Void
 
     private var closingEyes: Bool { model.calibration.phase == .closedEyes }
+    private var complete: Bool { model.calibration.phase == .complete }
+    private var faceVisible: Bool { !model.paused && camera.running && model.metrics?.usable == true }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                SessionHeader(title: "Before you drive", trailing: "End setup", action: endSession)
+                SessionHeader(title: "Eye enrollment with Ollie", trailing: "End setup", action: endSession)
                 StatusPill(title: "STAY SAFELY PARKED", symbol: "parkingsign.circle.fill", color: RahoTheme.amber)
+                HStack(spacing: 16) {
+                    OllieEyeStatus(size: 88, eyesClosed: model.calibration.eyesClosed(model.metrics),
+                                   tracking: faceVisible, color: complete ? RahoTheme.mint : RahoTheme.amber)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(complete ? "Ollie knows your eye baseline." : "Ollie is learning your eyes.")
+                            .font(.headline)
+                        Text(model.enrollmentVoiceStatus).font(.caption).foregroundStyle(RahoTheme.muted)
+                        Button(action: model.speakEnrollmentStep) {
+                            Label("Hear this step", systemImage: "speaker.wave.2.fill")
+                        }.font(.caption.weight(.semibold)).foregroundStyle(RahoTheme.amber).frame(minHeight: 32)
+                    }
+                }
                 VStack(alignment: .leading, spacing: 10) {
-                    Text(closingEyes ? "Now, close\nyour eyes." : "Let's get\nto know you.")
+                    Text(complete ? "Eye setup\ncomplete." : closingEyes ? "Now, close\nyour eyes." : "First, keep\nyour eyes open.")
                         .font(.system(size: 38, weight: .bold, design: .rounded)).tracking(-1)
-                    Text(closingEyes
+                    Text(complete ? "Open both eyes and look at the phone. Start monitoring when you're ready."
+                         : closingEyes
                          ? "While parked, gently close both eyes for 2 seconds. Keep your head facing the phone."
                          : "Mount the phone facing you. Look forward with both eyes open for 3 seconds.")
                         .font(.body).foregroundStyle(RahoTheme.muted).lineSpacing(4)
                 }
 
                 CameraPanel(camera: camera, metrics: model.metrics,
-                            label: closingEyes ? "Gently close both eyes" : "Look forward · eyes open")
-                Button { camera.start() } label: {
-                    Label("Restart camera", systemImage: "arrow.clockwise")
-                }
-                .buttonStyle(RahoSecondaryButton())
+                            label: complete ? (model.enrollmentReady ? "Both eyes open · ready to monitor" : "Open both eyes to continue")
+                                : closingEyes ? "Learning your closed eyes" : "Learning your open eyes")
 
                 if model.paused { NoticeView(message: "Monitoring is paused. Keep Saarthi open in the foreground.") }
                 if let error = camera.errorMessage {
@@ -41,7 +53,7 @@ struct CalibrationView: View {
                 RahoCard(accent: RahoTheme.amber.opacity(0.3)) {
                     VStack(alignment: .leading, spacing: 20) {
                         HStack {
-                            SectionLabel(title: closingEyes ? "Step 2 of 2" : "Step 1 of 2")
+                            SectionLabel(title: complete ? "Your eyes are enrolled" : closingEyes ? "Step 2 of 2" : "Step 1 of 2")
                             Spacer()
                             Text("\(Int(model.calibration.progress * 100))%")
                                 .font(.headline.monospacedDigit()).foregroundStyle(RahoTheme.amber)
@@ -49,13 +61,27 @@ struct CalibrationView: View {
                         ProgressView(value: model.calibration.progress)
                             .tint(RahoTheme.amber)
                             .accessibilityLabel("Calibration progress")
-                        CalibrationStep(number: "1", title: "Eyes open", detail: "3 seconds", complete: closingEyes, active: !closingEyes)
-                        CalibrationStep(number: "2", title: "Eyes closed", detail: "2 seconds · parked only", complete: false, active: closingEyes)
-                        Text("Progress follows the camera. Keep your face clearly lit and in frame; tracking gaps restart the current step.")
+                        CalibrationStep(number: "1", title: "Eyes open", detail: "3 seconds", complete: closingEyes || complete, active: !closingEyes && !complete)
+                        CalibrationStep(number: "2", title: "Eyes closed", detail: "2 seconds · parked only", complete: complete, active: closingEyes)
+                        Text(complete ? "Both eye baselines and your neutral head position are ready for this session."
+                             : "Progress follows actual camera samples. Keep your face clearly lit and in frame; tracking gaps restart the current step.")
                             .font(.footnote).foregroundStyle(RahoTheme.muted)
                     }
                 }
-                Text("Monitoring starts automatically when both steps complete. Camera frames are processed on this phone.")
+                if complete {
+                    Button(action: model.beginMonitoring) {
+                        Label("Start monitoring with Ollie", systemImage: "eye.fill")
+                    }.buttonStyle(RahoPrimaryButton(color: RahoTheme.mint))
+                        .disabled(!model.enrollmentReady).opacity(model.enrollmentReady ? 1 : 0.45)
+                    if !model.enrollmentReady {
+                        Text("Waiting for a clear, live view of both eyes open.")
+                            .font(.caption).foregroundStyle(RahoTheme.amber)
+                    }
+                }
+                Button(action: model.restartEnrollment) {
+                    Label(complete ? "Enroll my eyes again" : "Restart camera & eye setup", systemImage: "arrow.clockwise")
+                }.buttonStyle(RahoSecondaryButton()).disabled(model.paused)
+                Text("Eye setup stays in memory for this session. Camera frames are processed on this phone. Monitoring begins after you confirm.")
                     .font(.footnote).foregroundStyle(RahoTheme.muted)
             }
             .padding(24)
@@ -118,8 +144,13 @@ struct DriveView: View {
                 }
                 RahoCard(accent: stateColor.opacity(0.25)) {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text(unavailable ? "Bring your face\nback into view." : (checkingIn ? "Can you\nhear me?" : "We're watching\nwith you."))
-                            .font(.system(size: 34, weight: .bold, design: .rounded)).tracking(-0.8)
+                        HStack(spacing: 12) {
+                            Text(unavailable ? "Bring your face\nback into view." : (checkingIn ? "Can you\nhear me?" : "Ollie's watching\nover you."))
+                                .font(.system(size: 30, weight: .bold, design: .rounded)).tracking(-0.8)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            OllieEyeStatus(size: 78, eyesClosed: model.snapshot.eyesClosed,
+                                           tracking: !unavailable, color: stateColor)
+                        }
                         Text(unavailable ? "Fatigue detection needs a clear face and good light. Keep the app open."
                              : checkingIn ? "\(model.snapshot.trigger?.title ?? "Drowsiness signal"). If sleepy, pull over somewhere safe and rest."
                              : "Eye closure, yawn signals and head nods are monitored on your phone.")
@@ -234,6 +265,29 @@ struct DriveView: View {
             MetricTile(title: "Yawn signals", value: "\(model.snapshot.yawns)", suffix: "", symbol: "mouth", detail: "Past 2 minutes")
             MetricTile(title: "Head nods", value: "\(model.snapshot.nods)", suffix: "", symbol: "person.crop.circle", detail: "Past minute")
         }
+    }
+}
+
+private struct OllieEyeStatus: View {
+    let size: CGFloat
+    let eyesClosed: Bool
+    let tracking: Bool
+    let color: Color
+
+    var body: some View {
+        SaarthiMascot(size: size)
+            .padding(8)
+            .background(color.opacity(0.08), in: Circle())
+            .overlay(Circle().stroke(color.opacity(tracking ? 0.5 : 0.15), lineWidth: 1.5))
+            .overlay(alignment: .bottomTrailing) {
+                Image(systemName: !tracking ? "viewfinder" : eyesClosed ? "eye.slash.fill" : "eye.fill")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(color)
+                    .padding(8).background(RahoTheme.surface, in: Circle())
+                    .overlay(Circle().stroke(color.opacity(0.3)))
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(!tracking ? "Ollie is waiting for face tracking" : eyesClosed ? "Ollie: eyes closed" : "Ollie: face tracking active")
     }
 }
 
@@ -368,7 +422,8 @@ private struct CameraPanel: View {
                 Spacer()
                 HStack(spacing: 8) {
                     Circle().fill(faceVisible ? RahoTheme.mint : RahoTheme.amber).frame(width: 7, height: 7)
-                    Text(camera.running ? label : (camera.errorMessage == nil ? "Starting camera…" : "Camera unavailable"))
+                    Text(camera.running ? (faceVisible ? label : "Looking for your face · improve light")
+                         : (camera.errorMessage == nil ? "Starting camera…" : "Camera unavailable"))
                         .font(.caption.weight(.semibold)).foregroundStyle(.white)
                     Spacer()
                     if faceVisible, let metrics {
