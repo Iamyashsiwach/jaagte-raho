@@ -67,17 +67,22 @@ VALIDATION ACTUALLY COMPLETED
   This verifies source/API types, not app linking or installation.
 - A tiny Mac Catalyst UI preview compiled from the real views and core/model,
   with hardware/network/audio stubs and an explicit preview banner.
-- Full iOS app compilation, linking, simulator launch, and physical-device
-  behavior are NOT yet verified. Generic iOS build attempts failed with
-  No space left on device during SDK module compilation, before source validation.
+- FULL GENERIC iOS APP BUILD SUCCEEDED after clearing regenerable debug-symbol
+  cache. Actual MediaPipe, resources, SwiftUI, compilation and linking passed:
+  xcodebuild -workspace iOS/JaagteRaho.xcworkspace -scheme JaagteRaho
+    -configuration Debug -destination 'generic/platform=iOS'
+    -derivedDataPath build/DerivedData -jobs 2 CODE_SIGNING_ALLOWED=NO
+    COMPILER_INDEX_STORE_ENABLE=NO build
+  This was an unsigned device-target build. Simulator launch and physical-device
+  installation/behavior still need verification. Earlier disk failures resolved.
 - This Mac has Xcode 27.0 (27A266a), but no simulator runtimes and fluctuating
   disk space. Xcode copied several GB of connected iPhone debug symbols.
 - Connected iPhone 14 has iOS 27 and Developer Mode enabled. No valid code-signing
   identity was found on the original Mac. Physical install requires signing.
 
 FIRST TASKS FOR THE NEXT AGENT
-1. ./scripts/bootstrap.sh and ./scripts/run-simulator.sh. Fix any actual build
-   errors; do not assume parsing/typechecking is a complete build.
+1. ./scripts/bootstrap.sh and ./scripts/run-simulator.sh. Device-target compile
+   and link passed; simulator-target build/launch still need execution.
 2. Show and inspect the dashboard and labeled demo, verify bundled sound output.
 3. Keep all work on main and push changes promptly. User explicitly wants one branch.
 4. For physical iPhone: choose an Apple signing team in Xcode or run
