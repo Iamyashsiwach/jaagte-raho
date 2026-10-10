@@ -19,5 +19,6 @@ fi
 xcodebuild -workspace iOS/JaagteRaho.xcworkspace -scheme JaagteRaho -configuration Debug \
   -destination "id=$DEVICE_ID" -derivedDataPath build/DerivedData \
   DEVELOPMENT_TEAM="$TEAM_ID" -allowProvisioningUpdates -allowProvisioningDeviceRegistration build
+./scripts/check-bundle.sh build/DerivedData/Build/Products/Debug-iphoneos/JaagteRaho.app
 xcrun devicectl device install app --device "$DEVICE_ID" build/DerivedData/Build/Products/Debug-iphoneos/JaagteRaho.app
 xcrun devicectl device process launch --device "$DEVICE_ID" com.jaagteraho.driver

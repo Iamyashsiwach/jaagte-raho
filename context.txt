@@ -75,6 +75,9 @@ VALIDATION ACTUALLY COMPLETED
     COMPILER_INDEX_STORE_ENABLE=NO build
   This was an unsigned device-target build. Simulator launch and physical-device
   installation/behavior still need verification. Earlier disk failures resolved.
+  Verified the built app contains the face model, compiled asset catalog,
+  all nine voice clips, and alarm. Fixed XcodeGen resource declarations so
+  bootstrap regenerates these into the actual resource build phase.
 - This Mac has Xcode 27.0 (27A266a), but no simulator runtimes and fluctuating
   disk space. Xcode copied several GB of connected iPhone debug symbols.
 - Connected iPhone 14 has iOS 27 and Developer Mode enabled. No valid code-signing

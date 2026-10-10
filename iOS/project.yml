@@ -21,7 +21,6 @@ targets:
       - path: JaagteRaho
         excludes:
           - Resources
-    resources:
       - path: JaagteRaho/Resources/Audio
         buildPhase: resources
         type: folder

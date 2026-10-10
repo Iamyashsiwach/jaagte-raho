@@ -14,6 +14,7 @@ xcrun simctl bootstatus "$JR_SIM_ID" -b
 xcodebuild -workspace iOS/JaagteRaho.xcworkspace -scheme JaagteRaho -configuration Debug \
   -destination "id=$JR_SIM_ID" -derivedDataPath build/DerivedData -jobs 2 \
   CODE_SIGNING_ALLOWED=NO COMPILER_INDEX_STORE_ENABLE=NO build
+./scripts/check-bundle.sh build/DerivedData/Build/Products/Debug-iphonesimulator/JaagteRaho.app
 xcrun simctl install "$JR_SIM_ID" build/DerivedData/Build/Products/Debug-iphonesimulator/JaagteRaho.app
 xcrun simctl launch "$JR_SIM_ID" com.jaagteraho.driver
 open -a Simulator

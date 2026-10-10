@@ -7,15 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		005DBBE19AC07028D63AC035 /* Pods_JaagteRaho.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C225CE219965650D24E1E683 /* Pods_JaagteRaho.framework */; };
 		23F1A1795F11BB1F1254FD6F /* CalibrationCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FA89035C0CEA19C7F69130 /* CalibrationCollector.swift */; };
 		2A926CB38CF60CD0F9AC3002 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA462A565A860FD517EAD00 /* SettingsView.swift */; };
+		2D6F0E48E26D2D5E317BDE78 /* Audio in Resources */ = {isa = PBXBuildFile; fileRef = 96FFF185CE1A2CB87649A726 /* Audio */; };
 		2DEA2FB61AA0B596F3DAFF0F /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AB0D99D7EA891DC2B4871A /* CameraPreview.swift */; };
 		38C1266B654F8FAA8A046145 /* DriveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07EC0ADFBBF4D3FE2EBBBF6 /* DriveModel.swift */; };
 		510D540654053852754AD7FE /* VoiceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9469FA993E3F509D08A235F9 /* VoiceService.swift */; };
 		5C401A3A0582DB3B08481589 /* RahoTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4618C3285FC3120AF26AAA /* RahoTheme.swift */; };
+		650715EC845BA46582913EF5 /* Pods_JaagteRaho.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B4E7ED3A709986D9C0C0CC9 /* Pods_JaagteRaho.framework */; };
 		66A275BE90D9CD19FDC3C8E8 /* BackendClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3902FBA864CBD935F711ED /* BackendClient.swift */; };
+		6DCCD1A598EEB4FF4599BEC6 /* face_landmarker.task in Resources */ = {isa = PBXBuildFile; fileRef = 48CEBDCF5FBAB6B92A983470 /* face_landmarker.task */; };
 		72C5F299D5E6035BD49FCCDD /* FatigueEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FD89C442E4AFF1263F66AF /* FatigueEngine.swift */; };
+		7602196BAE14E48FB87CA6F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 256FBA4BCB547FFDCEBE6CA5 /* Assets.xcassets */; };
 		7BC30AB58BBF6D7CE2CB756E /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0BD655B9C21EB086D8CAEFB /* HistoryView.swift */; };
 		959A3930FCA58D968191E519 /* FaceMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613BD548EC1C248B1CB03D24 /* FaceMetrics.swift */; };
 		95E2C933DC02D932E1C19E47 /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32472E26F5FAB0E31D977346 /* EventStore.swift */; };
@@ -25,7 +28,7 @@
 		C750DABB73E3C1FB62C4ECC8 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59481A927FE314D51DEEE6E /* DashboardView.swift */; };
 		CB84537A7784D4072CF5617D /* VoiceLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BC1A551F2E93540F90843 /* VoiceLanguage.swift */; };
 		D598D2BF6B545585C1CAA65B /* FatigueEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6A0079E44F6E0A07E968 /* FatigueEngineTests.swift */; };
-		F0572A1C6C8BC310D3FA5FFC /* Pods_JaagteRahoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 158EDC0A55FDD02D33641C1C /* Pods_JaagteRahoTests.framework */; };
+		F9932F518CF4D2382A9E3963 /* Pods_JaagteRahoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AD7C7F631D8EDDC32E249BA /* Pods_JaagteRahoTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,48 +42,51 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		158EDC0A55FDD02D33641C1C /* Pods_JaagteRahoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JaagteRahoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B4E7ED3A709986D9C0C0CC9 /* Pods_JaagteRaho.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JaagteRaho.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FA462A565A860FD517EAD00 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		22EE77817779EBA03C10D6FE /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
+		256FBA4BCB547FFDCEBE6CA5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		32472E26F5FAB0E31D977346 /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
 		40FA89035C0CEA19C7F69130 /* CalibrationCollector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationCollector.swift; sourceTree = "<group>"; };
 		47FD89C442E4AFF1263F66AF /* FatigueEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FatigueEngine.swift; sourceTree = "<group>"; };
-		5CBE2DDFD2F0B225C0FDD3F8 /* Pods-JaagteRahoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRahoTests.release.xcconfig"; path = "Target Support Files/Pods-JaagteRahoTests/Pods-JaagteRahoTests.release.xcconfig"; sourceTree = "<group>"; };
+		48CEBDCF5FBAB6B92A983470 /* face_landmarker.task */ = {isa = PBXFileReference; path = face_landmarker.task; sourceTree = "<group>"; };
 		613BD548EC1C248B1CB03D24 /* FaceMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceMetrics.swift; sourceTree = "<group>"; };
+		6DEC1D003DEB6E79F50A514F /* Pods-JaagteRaho.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRaho.release.xcconfig"; path = "Target Support Files/Pods-JaagteRaho/Pods-JaagteRaho.release.xcconfig"; sourceTree = "<group>"; };
 		6E4618C3285FC3120AF26AAA /* RahoTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RahoTheme.swift; sourceTree = "<group>"; };
-		745E247FA7FD7074F945EBC8 /* Pods-JaagteRahoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRahoTests.debug.xcconfig"; path = "Target Support Files/Pods-JaagteRahoTests/Pods-JaagteRahoTests.debug.xcconfig"; sourceTree = "<group>"; };
 		793454695A2DFD804E673AE4 /* SessionViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionViews.swift; sourceTree = "<group>"; };
+		7DF533A88A67EB4CAECCEDD3 /* Pods-JaagteRahoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRahoTests.debug.xcconfig"; path = "Target Support Files/Pods-JaagteRahoTests/Pods-JaagteRahoTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9469FA993E3F509D08A235F9 /* VoiceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceService.swift; sourceTree = "<group>"; };
+		96FFF185CE1A2CB87649A726 /* Audio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Audio; path = JaagteRaho/Resources/Audio; sourceTree = SOURCE_ROOT; };
+		9AD7C7F631D8EDDC32E249BA /* Pods_JaagteRahoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JaagteRahoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9E7702AC773CCCD900C475A0 /* Pods-JaagteRahoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRahoTests.release.xcconfig"; path = "Target Support Files/Pods-JaagteRahoTests/Pods-JaagteRahoTests.release.xcconfig"; sourceTree = "<group>"; };
 		A07EC0ADFBBF4D3FE2EBBBF6 /* DriveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveModel.swift; sourceTree = "<group>"; };
 		A0BD655B9C21EB086D8CAEFB /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		A35BC1A551F2E93540F90843 /* VoiceLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceLanguage.swift; sourceTree = "<group>"; };
-		A37E59CD5CD7A288EE82DABD /* Pods-JaagteRaho.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRaho.release.xcconfig"; path = "Target Support Files/Pods-JaagteRaho/Pods-JaagteRaho.release.xcconfig"; sourceTree = "<group>"; };
 		ABC48EA71D9D420E06536829 /* JaagteRahoTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = JaagteRahoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7AB0D99D7EA891DC2B4871A /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
-		C225CE219965650D24E1E683 /* Pods_JaagteRaho.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JaagteRaho.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB844C311383C93A8CBBBD9B /* Pods-JaagteRaho.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRaho.debug.xcconfig"; path = "Target Support Files/Pods-JaagteRaho/Pods-JaagteRaho.debug.xcconfig"; sourceTree = "<group>"; };
 		C8DE6A0079E44F6E0A07E968 /* FatigueEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FatigueEngineTests.swift; sourceTree = "<group>"; };
 		CEC927B1A734F8A168C780E4 /* JaagteRahoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JaagteRahoApp.swift; sourceTree = "<group>"; };
 		DF3902FBA864CBD935F711ED /* BackendClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendClient.swift; sourceTree = "<group>"; };
 		EB896D8293D16E38ABAE5112 /* JaagteRaho.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = JaagteRaho.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED35C2DC8D4D4F6F014D0A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		EE5331F4A0D3E8C3BF4AA693 /* Pods-JaagteRaho.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRaho.debug.xcconfig"; path = "Target Support Files/Pods-JaagteRaho/Pods-JaagteRaho.debug.xcconfig"; sourceTree = "<group>"; };
 		F59481A927FE314D51DEEE6E /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3C1B3853001B8D38F9F9B162 /* Frameworks */ = {
+		7287DE23A679D85541D230A3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0572A1C6C8BC310D3FA5FFC /* Pods_JaagteRahoTests.framework in Frameworks */,
+				F9932F518CF4D2382A9E3963 /* Pods_JaagteRahoTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		440222A60DF40D1E0ECFA3C8 /* Frameworks */ = {
+		C412E086051760E3DB7B4F84 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				005DBBE19AC07028D63AC035 /* Pods_JaagteRaho.framework in Frameworks */,
+				650715EC845BA46582913EF5 /* Pods_JaagteRaho.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,10 +133,20 @@
 				CEC927B1A734F8A168C780E4 /* JaagteRahoApp.swift */,
 				CF5890BA29CA5C7E9434B9B7 /* Camera */,
 				016816CEECBB2EB85E95AFCA /* Core */,
+				F904059546F58D7EA1F2CE1A /* Resources */,
 				E4F7230ECDF2352340B68B10 /* Services */,
 				1072547DDECDAA1C7631140D /* Views */,
 			);
 			path = JaagteRaho;
+			sourceTree = "<group>";
+		};
+		1FA4B371C1E881E108819626 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0B4E7ED3A709986D9C0C0CC9 /* Pods_JaagteRaho.framework */,
+				9AD7C7F631D8EDDC32E249BA /* Pods_JaagteRahoTests.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		267D3C3D0241D4C034E0301E /* JaagteRahoCoreTests */ = {
@@ -158,13 +174,13 @@
 			path = Tests;
 			sourceTree = "<group>";
 		};
-		67082E8EF4EF45190DBBD650 /* Pods */ = {
+		A5C156F85F47C7E91D5ACCDB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				EE5331F4A0D3E8C3BF4AA693 /* Pods-JaagteRaho.debug.xcconfig */,
-				A37E59CD5CD7A288EE82DABD /* Pods-JaagteRaho.release.xcconfig */,
-				745E247FA7FD7074F945EBC8 /* Pods-JaagteRahoTests.debug.xcconfig */,
-				5CBE2DDFD2F0B225C0FDD3F8 /* Pods-JaagteRahoTests.release.xcconfig */,
+				BB844C311383C93A8CBBBD9B /* Pods-JaagteRaho.debug.xcconfig */,
+				6DEC1D003DEB6E79F50A514F /* Pods-JaagteRaho.release.xcconfig */,
+				7DF533A88A67EB4CAECCEDD3 /* Pods-JaagteRahoTests.debug.xcconfig */,
+				9E7702AC773CCCD900C475A0 /* Pods-JaagteRahoTests.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -176,8 +192,8 @@
 				41FDD5D3939787CB7050A67B /* Jaagte Raho */,
 				1484A9167530E3F61CFDBE70 /* JaagteRaho */,
 				034B2549A183D4E4E3633913 /* Products */,
-				67082E8EF4EF45190DBBD650 /* Pods */,
-				FC0D3D64888593F7A373EFE0 /* Frameworks */,
+				A5C156F85F47C7E91D5ACCDB /* Pods */,
+				1FA4B371C1E881E108819626 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -200,13 +216,14 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		FC0D3D64888593F7A373EFE0 /* Frameworks */ = {
+		F904059546F58D7EA1F2CE1A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C225CE219965650D24E1E683 /* Pods_JaagteRaho.framework */,
-				158EDC0A55FDD02D33641C1C /* Pods_JaagteRahoTests.framework */,
+				256FBA4BCB547FFDCEBE6CA5 /* Assets.xcassets */,
+				96FFF185CE1A2CB87649A726 /* Audio */,
+				48CEBDCF5FBAB6B92A983470 /* face_landmarker.task */,
 			);
-			name = Frameworks;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -216,9 +233,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A109C57917B41967D2CF8183 /* Build configuration list for PBXNativeTarget "JaagteRahoTests" */;
 			buildPhases = (
-				E3D4072D84ED44AEC2F75552 /* [CP] Check Pods Manifest.lock */,
+				AC6FA7587253AEA1A5BFD787 /* [CP] Check Pods Manifest.lock */,
 				4B03DD76C632ADEE1FF05F5A /* Sources */,
-				3C1B3853001B8D38F9F9B162 /* Frameworks */,
+				7287DE23A679D85541D230A3 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -234,9 +251,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D6F5EA0CDF1BD03B6B9C537D /* Build configuration list for PBXNativeTarget "JaagteRaho" */;
 			buildPhases = (
-				9FD255EC3BC55AD6EEE0F7F6 /* [CP] Check Pods Manifest.lock */,
+				CF8CAF2B4EB5E6492B16B304 /* [CP] Check Pods Manifest.lock */,
 				A5E7228C0356748331AD73FB /* Sources */,
-				440222A60DF40D1E0ECFA3C8 /* Frameworks */,
+				3B20428A0AEF4D77736FAD3A /* Resources */,
+				C412E086051760E3DB7B4F84 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -286,30 +304,21 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		9FD255EC3BC55AD6EEE0F7F6 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
+/* Begin PBXResourcesBuildPhase section */
+		3B20428A0AEF4D77736FAD3A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-JaagteRaho-checkManifestLockResult.txt",
+				7602196BAE14E48FB87CA6F5 /* Assets.xcassets in Resources */,
+				2D6F0E48E26D2D5E317BDE78 /* Audio in Resources */,
+				6DCCD1A598EEB4FF4599BEC6 /* face_landmarker.task in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
-		E3D4072D84ED44AEC2F75552 /* [CP] Check Pods Manifest.lock */ = {
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AC6FA7587253AEA1A5BFD787 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -325,6 +334,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-JaagteRahoTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CF8CAF2B4EB5E6492B16B304 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-JaagteRaho-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -509,7 +540,7 @@
 		};
 		3F48616D7B3F9EF2836C7D55 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 745E247FA7FD7074F945EBC8 /* Pods-JaagteRahoTests.debug.xcconfig */;
+			baseConfigurationReference = 7DF533A88A67EB4CAECCEDD3 /* Pods-JaagteRahoTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GENERATE_INFOPLIST_FILE = YES;
@@ -527,7 +558,7 @@
 		};
 		775AB041F273E36A44BCC9F6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5CBE2DDFD2F0B225C0FDD3F8 /* Pods-JaagteRahoTests.release.xcconfig */;
+			baseConfigurationReference = 9E7702AC773CCCD900C475A0 /* Pods-JaagteRahoTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GENERATE_INFOPLIST_FILE = YES;
@@ -545,7 +576,7 @@
 		};
 		8F91A97AEA823913022CDD93 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A37E59CD5CD7A288EE82DABD /* Pods-JaagteRaho.release.xcconfig */;
+			baseConfigurationReference = 6DEC1D003DEB6E79F50A514F /* Pods-JaagteRaho.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -563,7 +594,7 @@
 		};
 		CE45E4DC8FF11C2A9A1066D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EE5331F4A0D3E8C3BF4AA693 /* Pods-JaagteRaho.debug.xcconfig */;
+			baseConfigurationReference = BB844C311383C93A8CBBBD9B /* Pods-JaagteRaho.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
