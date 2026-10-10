@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Jaagte Raho</string>
+	<string>Saarthi</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,9 +26,9 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Jaagte Raho watches eye closure on this phone to detect possible drowsiness. Camera frames are not recorded or uploaded.</string>
+	<string>Saarthi watches eye closure on this phone to detect possible drowsiness. Camera frames are not recorded or uploaded.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Connect to your Mac's Jaagte Raho voice backend on the same network.</string>
+	<string>Connect to your Mac's Saarthi voice backend on the same network.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Answer a short hands-free check-in. Microphone audio stays on this phone.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

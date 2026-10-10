@@ -117,7 +117,7 @@ struct SettingsView: View {
                         SectionLabel(title: "Before each drive")
                         Text("Mount the phone securely, keep your face well lit, test the voice and raise the volume. Keep the app open while monitoring. Set up only while safely parked.")
                             .font(.footnote).foregroundStyle(RahoTheme.muted).lineSpacing(3)
-                        Text("Jaagte Raho · research prototype")
+                        Text("Saarthi · research prototype")
                             .font(.caption).foregroundStyle(RahoTheme.muted.opacity(0.8))
                     }
                 }

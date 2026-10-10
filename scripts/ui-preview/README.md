@@ -8,7 +8,7 @@ On an Apple Silicon Mac with full Xcode installed and its license accepted, run 
 
 ```sh
 python3 scripts/ui-preview/build_preview.py
-open "build/UI-Preview/Jaagte Raho UI Preview.app"
+open "build/UI-Preview/Saarthi UI Preview.app"
 ```
 
 This is an interface preview, not a substitute for compiling, installing or testing the real iPhone app. The source is tracked under `scripts/ui-preview`; generated app files stay in the ignored `build/UI-Preview` directory. No CocoaPods dependency or provider API key is required for this preview.

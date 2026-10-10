@@ -1,10 +1,10 @@
-# Jaagte Raho · जागते रहो
+# Saarthi · सारथी
 
 **An iPhone drowsiness co-pilot that notices prolonged eye closure, checks in by voice, and escalates to an alarm.**
 
-Jaagte Raho means “Stay Awake.” This prototype uses the driver's dashboard-mounted iPhone rather than a dedicated fleet camera. Face analysis runs locally; Hindi, Punjabi, and English prompts are bundled for playback without mobile data. Optional GPT-5-nano conversation, Smallest.ai speech, and a fleet webhook sit behind a small server.
+This prototype uses the driver's dashboard-mounted iPhone rather than a dedicated fleet camera. Face analysis runs locally; Hindi, Punjabi, and English prompts are bundled for playback without mobile data. Optional GPT-5-nano conversation, Smallest.ai speech, and a fleet webhook sit behind a small server.
 
-**Project status:** native iOS MVP compiles and links successfully with full Xcode and real MediaPipe. Simulator launch, iPhone signing/installation, camera behavior, speech support, and sustained performance still require verification. The first demonstration must take place while parked. This is a prototype with heuristic thresholds, not a validated driver-safety system.
+**Project status:** native iOS MVP builds with full Xcode and real MediaPipe, and has been signed, installed, and launched on an iPhone 14. A camera startup fix is being verified on-device. Simulator launch, camera behavior, speech support, and sustained performance still require acceptance checks. The first demonstration must take place while parked. This is a prototype with heuristic thresholds, not a validated driver-safety system.
 
 **Continuing on another Mac?** Read [context.txt](context.txt) for current state and immediate demo setup.
 
@@ -130,7 +130,7 @@ npm test
 
 From the repository root, `./scripts/check.sh` runs the integrated core, backend, and credential checks.
 
-Current executed results: **26/26 Swift core assertions and 19/19 backend tests pass**. The **full unsigned iOS device-target app build succeeds**, including actual MediaPipe integration and app linking. Simulator launch and signed iPhone installation remain to be tested. An actual-view Mac Catalyst preview also builds and displays the dashboard.
+Current executed results: **26/26 Swift core assertions and 19/19 backend tests pass**. The **full signed iOS app build, iPhone installation, and launch succeed**, including actual MediaPipe integration and app linking. Simulator launch and live camera acceptance checks remain to be completed. An actual-view Mac Catalyst preview also builds and displays the dashboard.
 
 The core tests cover closure escalation, acknowledgments, missing/stale frames, calibration, and timing. Backend tests cover authentication, event handling, provider failures, and fleet delivery. Automated tests establish behavior for those cases; physical-device recognition accuracy, alert audibility, battery use, inference latency, and heat still need measurement. See [the demo checklist](docs/DEMO.md) before presenting the live camera flow.
 

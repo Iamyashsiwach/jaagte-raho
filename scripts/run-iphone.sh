@@ -17,7 +17,7 @@ if [ -z "${DEVICE_ID:-}" ]; then
   echo 'Connect and unlock one trusted iPhone, then set DEVICE_ID from xcrun devicectl list devices.' >&2; exit 1
 fi
 xcodebuild -workspace iOS/JaagteRaho.xcworkspace -scheme JaagteRaho -configuration Debug \
-  -destination "id=$DEVICE_ID" -derivedDataPath build/DerivedData \
+  -destination "id=$DEVICE_ID" -derivedDataPath build/DerivedData -jobs 2 COMPILER_INDEX_STORE_ENABLE=NO \
   DEVELOPMENT_TEAM="$TEAM_ID" -allowProvisioningUpdates -allowProvisioningDeviceRegistration build
 ./scripts/check-bundle.sh build/DerivedData/Build/Products/Debug-iphoneos/JaagteRaho.app
 xcrun devicectl device install app --device "$DEVICE_ID" build/DerivedData/Build/Products/Debug-iphoneos/JaagteRaho.app

@@ -142,6 +142,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     model: process.env.OPENAI_MODEL || 'gpt-5-nano', fleetURL: process.env.FLEET_WEBHOOK_URL,
     fleetToken: process.env.FLEET_WEBHOOK_TOKEN});
   server.listen(Number(process.env.PORT || 8787), process.env.HOST || '127.0.0.1', () => {
-    console.log(`Jaagte Raho backend listening on port ${process.env.PORT || 8787}. Credentials are server-side only.`);
+    console.log(`Saarthi backend listening on port ${process.env.PORT || 8787}. Credentials are server-side only.`);
   });
 }

@@ -14,7 +14,6 @@ final class CameraService: NSObject, ObservableObject, AVCaptureVideoDataOutputS
     private let frameQueue = DispatchQueue(label: "raho.camera.frames", qos: .userInitiated)
     private var landmarker: FaceLandmarker?
     private var configured = false
-    private var lastInferenceAt: Double = 0
     private var nextInferenceAt: Double = 0
     private var lastTimestamp = 0
     private var observations: [NSObjectProtocol] = []
@@ -22,6 +21,8 @@ final class CameraService: NSObject, ObservableObject, AVCaptureVideoDataOutputS
     private let stateLock = NSLock()
     private var generation = 0
     private var requestedRunning = false
+    private var receivedFrame = false
+    private var completedInference = false
 
     override init() {
         super.init()
@@ -78,8 +79,30 @@ final class CameraService: NSObject, ObservableObject, AVCaptureVideoDataOutputS
         return requestedRunning && generation == request
     }
     private func configureAndStart(request: Int) {
+        // Start the actual camera independently of ML initialization so its live
+        // preview does not depend on a model-loading or permission-dialog race.
+        sessionQueue.async { [weak self] in
+            guard let self, self.isRequested(request) else { return }
+            do {
+                if !self.configured { try self.configureSession(); self.configured = true }
+                guard self.isRequested(request) else { return }
+                if !self.session.isRunning { self.session.startRunning() }
+                let active = self.session.isRunning
+                DispatchQueue.main.async {
+                    guard self.isRequested(request) else { return }
+                    self.running = active
+                    if !active { self.errorMessage = "Camera did not start. Tap Restart camera while parked." }
+                }
+                print("Saarthi camera: capture started = \(active)")
+                self.configureLandmarker(request: request)
+            } catch { self.report(error.localizedDescription) }
+        }
+    }
+    private func configureLandmarker(request: Int) {
         frameQueue.async { [weak self] in
             guard let self, self.isRequested(request) else { return }
+            self.receivedFrame = false; self.completedInference = false
+            self.nextInferenceAt = 0
             do {
                 if self.landmarker == nil {
                     guard let model = Bundle.main.path(forResource: "face_landmarker", ofType: "task") else {
@@ -96,15 +119,12 @@ final class CameraService: NSObject, ObservableObject, AVCaptureVideoDataOutputS
                     options.outputFacialTransformationMatrixes = true
                     self.landmarker = try FaceLandmarker(options: options)
                 }
-                self.sessionQueue.async { [weak self] in
-                    guard let self, self.isRequested(request) else { return }
-                    do {
-                        if !self.configured { try self.configureSession(); self.configured = true }
-                        if !self.session.isRunning { self.session.startRunning() }
-                        DispatchQueue.main.async { self.running = self.session.isRunning && self.isRequested(request) }
-                    } catch { self.report(error.localizedDescription) }
+            } catch {
+                DispatchQueue.main.async {
+                    guard self.isRequested(request) else { return }
+                    self.errorMessage = "Face tracking could not start: \(error.localizedDescription)"
                 }
-            } catch { self.report("Face tracking could not start: \(error.localizedDescription)") }
+            }
         }
     }
     private func configureSession() throws {
@@ -139,15 +159,22 @@ final class CameraService: NSObject, ObservableObject, AVCaptureVideoDataOutputS
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer,
                        from connection: AVCaptureConnection) {
         let now = ProcessInfo.processInfo.systemUptime
+        if !receivedFrame {
+            receivedFrame = true
+            print("Saarthi camera: video frames received")
+        }
         guard now + 0.002 >= nextInferenceAt, let landmarker,
               let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        lastInferenceAt = now
         nextInferenceAt = max(nextInferenceAt + interval, now + interval * 0.5)
         let timestamp = max(lastTimestamp + 1, Int(now * 1000)); lastTimestamp = timestamp
         let illumination = estimateIllumination(pixelBuffer)
         do {
             let image = try MPImage(sampleBuffer: sampleBuffer, orientation: .up)
             let result = try landmarker.detect(videoFrame: image, timestampInMilliseconds: timestamp)
+            if !completedInference {
+                completedInference = true
+                print("Saarthi camera: face inference completed")
+            }
             let elapsed = (ProcessInfo.processInfo.systemUptime - now) * 1000
             var metrics = FaceMetrics.missing(at: now)
             if let points = result.faceLandmarks.first, points.count >= 468 {

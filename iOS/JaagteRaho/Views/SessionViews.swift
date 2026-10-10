@@ -24,8 +24,12 @@ struct CalibrationView: View {
 
                 CameraPanel(camera: camera, metrics: model.metrics,
                             label: closingEyes ? "Gently close both eyes" : "Look forward · eyes open")
+                Button { camera.start() } label: {
+                    Label("Restart camera", systemImage: "arrow.clockwise")
+                }
+                .buttonStyle(RahoSecondaryButton())
 
-                if model.paused { NoticeView(message: "Monitoring is paused. Keep Jaagte Raho open in the foreground.") }
+                if model.paused { NoticeView(message: "Monitoring is paused. Keep Saarthi open in the foreground.") }
                 if let error = camera.errorMessage {
                     NoticeView(message: error, color: RahoTheme.red)
                     Button {
@@ -241,7 +245,7 @@ struct CriticalAlertView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
                 HStack {
-                    SectionLabel(title: "Jaagte Raho")
+                    SectionLabel(title: "Saarthi")
                     Spacer()
                     Text(model.elapsedLabel).font(.caption.monospacedDigit()).foregroundStyle(RahoTheme.muted)
                 }

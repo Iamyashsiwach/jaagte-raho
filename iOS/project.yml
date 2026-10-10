@@ -36,11 +36,11 @@ targets:
     info:
       path: JaagteRaho/Info.plist
       properties:
-        CFBundleDisplayName: Jaagte Raho
-        NSCameraUsageDescription: Jaagte Raho watches eye closure on this phone to detect possible drowsiness. Camera frames are not recorded or uploaded.
+        CFBundleDisplayName: Saarthi
+        NSCameraUsageDescription: Saarthi watches eye closure on this phone to detect possible drowsiness. Camera frames are not recorded or uploaded.
         NSMicrophoneUsageDescription: Answer a short hands-free check-in. Microphone audio stays on this phone.
         NSSpeechRecognitionUsageDescription: Recognize a short driver acknowledgment using on-device speech where this language is supported.
-        NSLocalNetworkUsageDescription: Connect to your Mac's Jaagte Raho voice backend on the same network.
+        NSLocalNetworkUsageDescription: Connect to your Mac's Saarthi voice backend on the same network.
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
         UISupportedInterfaceOrientations:

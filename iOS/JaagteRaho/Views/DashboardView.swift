@@ -136,7 +136,7 @@ private struct ReadyView: View {
                 .frame(width: 48, height: 48)
                 .background(RahoTheme.amber.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
             VStack(alignment: .leading, spacing: 3) {
-                Text("JAAGTE RAHO").font(.system(.subheadline, design: .rounded).weight(.heavy)).tracking(1.5)
+                Text("SAARTHI").font(.system(.subheadline, design: .rounded).weight(.heavy)).tracking(1.5)
                 Text("STAY AWAKE. ARRIVE SAFE.")
                     .font(.system(size: 8, weight: .bold)).tracking(1.2).foregroundStyle(RahoTheme.muted)
             }

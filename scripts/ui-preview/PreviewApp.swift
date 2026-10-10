@@ -15,7 +15,7 @@ struct JaagteRahoUIPreviewApp: App {
                     for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
                         scene.sizeRestrictions?.minimumSize = CGSize(width: 420, height: 720)
                         scene.sizeRestrictions?.maximumSize = CGSize(width: 460, height: 950)
-                        scene.title = "Jaagte Raho · actual SwiftUI preview"
+                        scene.title = "Saarthi · actual SwiftUI preview"
                     }
                 }
         }

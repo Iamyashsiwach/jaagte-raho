@@ -1,11 +1,15 @@
-JAAGTE RAHO — CONTINUATION CONTEXT
+SAARTHI — CONTINUATION CONTEXT
 Updated: 2026-10-10. Repository: https://github.com/Iamyashsiwach/jaagte-raho
 Use MAIN ONLY. Earlier feature branches were removed at the user's request.
 
 IMMEDIATE PRIORITY
-The demo is imminent. Continue on a second Mac with full Xcode and an installed
-iPhone simulator runtime. Build and launch the existing native iOS app, then
-use its clearly labeled synthetic demo. Do not rebuild the app in Flutter.
+The app is now named SAARTHI. It has been signed, installed and launched on
+the connected physical iPhone 14. User reported camera stuck at Preparing
+face tracking. Current fix stops suspending during permission-dialog inactive
+transitions, starts camera before model initialization, and refreshes preview
+connections. Rebuilt signed app; live camera-frame verification is in progress.
+Keep the imminent demo moving. On a second Mac with full Xcode, use the setup
+below. Do not rebuild in Flutter. All work stays on main.
 
 FAST START ON THE SECOND MAC
   git clone https://github.com/Iamyashsiwach/jaagte-raho.git
@@ -80,8 +84,10 @@ VALIDATION ACTUALLY COMPLETED
   bootstrap regenerates these into the actual resource build phase.
 - This Mac has Xcode 27.0 (27A266a), but no simulator runtimes and fluctuating
   disk space. Xcode copied several GB of connected iPhone debug symbols.
-- Connected iPhone 14 has iOS 27 and Developer Mode enabled. No valid code-signing
-  identity was found on the original Mac. Physical install requires signing.
+- Connected iPhone 14 has iOS 27 and Developer Mode enabled. Apple sign-in,
+  automatic signing, installation, developer trust, and launch now succeeded.
+  Name shown on the installed app is Saarthi; internal project/scheme remains
+  JaagteRaho and bundle identifier remains com.jaagteraho.driver.
 
 FIRST TASKS FOR THE NEXT AGENT
 1. ./scripts/bootstrap.sh and ./scripts/run-simulator.sh. Device-target compile

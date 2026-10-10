@@ -9,7 +9,7 @@ root = source.parents[1]
 output = root / "build/UI-Preview"
 sdk = subprocess.check_output(["xcrun", "--sdk", "macosx", "--show-sdk-path"], text=True).strip()
 sdk = Path(sdk)
-app = output / "Jaagte Raho UI Preview.app"
+app = output / "Saarthi UI Preview.app"
 contents = app / "Contents"
 executable = contents / "MacOS" / "JaagteRahoUIPreview"
 executable.parent.mkdir(parents=True, exist_ok=True)
@@ -29,8 +29,8 @@ command = [
 subprocess.run(command, check=True, cwd=root)
 with (contents / "Info.plist").open("wb") as destination:
     plistlib.dump({
-        "CFBundleName": "Jaagte Raho UI Preview",
-        "CFBundleDisplayName": "Jaagte Raho UI Preview",
+        "CFBundleName": "Saarthi UI Preview",
+        "CFBundleDisplayName": "Saarthi UI Preview",
         "CFBundleIdentifier": "com.jaagteraho.ui-preview",
         "CFBundleExecutable": executable.name,
         "CFBundlePackageType": "APPL",
