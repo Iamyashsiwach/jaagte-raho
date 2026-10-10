@@ -1,7 +1,22 @@
 # Pull, build and demo on another iPhone
 
+The current demo build is published at [Sudhanshu069/jaagte-raho](https://github.com/Sudhanshu069/jaagte-raho) on `main`. For a fresh checkout:
+
 ```sh
-git pull origin main
+git clone https://github.com/Sudhanshu069/jaagte-raho.git
+cd jaagte-raho
+```
+
+If you already cloned `Iamyashsiwach/jaagte-raho`, bring in the demo build with:
+
+```sh
+git fetch https://github.com/Sudhanshu069/jaagte-raho.git main
+git merge --ff-only FETCH_HEAD
+```
+
+Then install dependencies and open the app workspace:
+
+```sh
 brew install xcodegen cocoapods
 ./scripts/bootstrap.sh
 open iOS/JaagteRaho.xcworkspace
