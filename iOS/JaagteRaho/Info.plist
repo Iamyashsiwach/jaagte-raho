@@ -25,12 +25,16 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Choose music from your library for your journey. Voice check-ins and alarms pause playback.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Saarthi watches eye closure on this phone to detect possible drowsiness. Camera frames are not recorded or uploaded.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Connect to your Mac's Saarthi voice backend on the same network.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Record your journey while Saarthi is open and share your current location when you choose. Routes stay on this phone.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Answer a short hands-free check-in. Microphone audio stays on this phone.</string>
+	<string>Talk to Ollie and answer check-ins. Online companion turns send a short recording to Smallest.ai for transcription; offline check-ins stay on this phone.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Recognize a short driver acknowledgment using on-device speech where this language is supported.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

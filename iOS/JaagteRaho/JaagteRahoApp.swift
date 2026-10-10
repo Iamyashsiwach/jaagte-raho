@@ -4,10 +4,14 @@ import SwiftUI
 struct JaagteRahoApp: App {
     @StateObject private var model = DriveModel()
     @Environment(\.scenePhase) private var scenePhase
+    @AppStorage("onboardingComplete") private var onboardingComplete = false
 
     var body: some Scene {
         WindowGroup {
-            DashboardView(model: model)
+            Group {
+                if onboardingComplete { DashboardView(model: model) }
+                else { OnboardingView(model: model, journey: model.journey) { onboardingComplete = true } }
+            }
                 .preferredColorScheme(.dark)
                 .tint(RahoTheme.amber)
                 #if DEBUG

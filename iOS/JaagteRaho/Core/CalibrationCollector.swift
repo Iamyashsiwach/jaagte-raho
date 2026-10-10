@@ -11,6 +11,12 @@ public struct CalibrationCollector {
     private var validDuration: TimeInterval = 0
 
     public init() {}
+    public func eyesClosed(_ sample: FaceMetrics?) -> Bool {
+        guard let sample, sample.usable, phase != .openEyes else { return false }
+        if let result { return result.eyesClosed(sample) }
+        return sample.leftEAR < median(open.map(\.leftEAR)) * 0.65 &&
+            sample.rightEAR < median(open.map(\.rightEAR)) * 0.65
+    }
     public mutating func ingest(_ sample: FaceMetrics) {
         guard phase != .complete else { return }
         guard sample.usable else { resetCurrentPhase(); return }
@@ -29,7 +35,7 @@ public struct CalibrationCollector {
             }
         } else {
             let lo = median(open.map(\.leftEAR)), ro = median(open.map(\.rightEAR))
-            guard sample.leftEAR < lo * 0.65, sample.rightEAR < ro * 0.65 else {
+            guard eyesClosed(sample) else {
                 resetCurrentPhase(); return
             }
             closed.append(sample)

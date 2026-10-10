@@ -7,6 +7,7 @@ struct SettingsView: View {
     @State private var draftURL: String
     @State private var token = ""
     @State private var connecting = false
+    @AppStorage("onboardingComplete") private var onboardingComplete = false
     @FocusState private var focusedField: Field?
 
     private enum Field { case url, token }
@@ -119,6 +120,9 @@ struct SettingsView: View {
                             .font(.footnote).foregroundStyle(RahoTheme.muted).lineSpacing(3)
                         Text("Saarthi · research prototype")
                             .font(.caption).foregroundStyle(RahoTheme.muted.opacity(0.8))
+                        Button("Meet Ollie again · replay introduction") {
+                            model.companion.stop(); onboardingComplete = false; dismiss()
+                        }.frame(minHeight: 44).foregroundStyle(RahoTheme.amber)
                     }
                 }
                 .padding(24)

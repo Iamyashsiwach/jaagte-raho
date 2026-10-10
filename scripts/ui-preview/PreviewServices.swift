@@ -4,6 +4,7 @@ import Foundation
 import SwiftUI
 import Combine
 import AVFoundation
+import MediaPlayer
 
 final class CameraService: ObservableObject {
     let session = AVCaptureSession()
@@ -39,7 +40,10 @@ final class VoiceService: ObservableObject {
     @Published var offlineRecognitionAvailable = false
     @Published var audioWarning: String?
     var onAcknowledgment: ((String) -> Void)?
+    var onWillSpeak: (() -> Void)?
     func requestPermissions(language: VoiceLanguage) async {}
+    func requestMicrophonePermission() async -> Bool { false }
+    func recordForConversation(reply: @escaping (Data?) -> Void) { reply(nil) }
     func playPrompt(_ name: String, language: VoiceLanguage, completion: (() -> Void)? = nil) {
         status = "UI preview · \(language.name) prompt, audio disabled"
         if let completion {
@@ -50,7 +54,12 @@ final class VoiceService: ObservableObject {
         }
     }
     func listen(language: VoiceLanguage) { status = "UI preview · microphone disabled" }
-    func playCloudAudio(_ data: Data) {}
+    func playCloudAudio(_ data: Data, completion: (() -> Void)? = nil) { completion?() }
+    func speak(_ text: String, language: VoiceLanguage, completion: (() -> Void)? = nil) {
+        status = "Preview · speech disabled"; completion?()
+    }
+    func listenForConversation(language: VoiceLanguage, allowNetwork: Bool = false, reply: @escaping (String) -> Void) { reply("") }
+    func finishConversation() {}
     func stopListening() { listening = false }
     func startAlarm() { status = "UI preview · alarm screen, audio disabled" }
     func stopAll() { status = "UI preview · voice playback disabled" }
@@ -82,6 +91,9 @@ struct BackendClient {
     func status() async throws -> ServerStatus { throw PreviewError.disabled }
     func conversation(_ transcript: String, language: VoiceLanguage) async throws -> String { throw PreviewError.disabled }
     func speech(_ text: String, language: VoiceLanguage) async throws -> Data { throw PreviewError.disabled }
+    func companion(_ transcript: String, language: VoiceLanguage, assistant: String, history: [[String:String]] = []) async throws -> ConversationReply { throw PreviewError.disabled }
+    func transcribe(_ audio: Data, language: VoiceLanguage) async throws -> String { throw PreviewError.disabled }
+    struct ConversationReply { let text: String; var provider: String? = nil }
     enum PreviewError: Error { case disabled }
 }
 
@@ -94,4 +106,37 @@ struct ServerStatus {
 enum KeychainToken {
     static func read() -> String { "" }
     static func save(_ token: String) -> Bool { false }
+}
+
+@MainActor
+final class JourneyService: ObservableObject {
+    @Published var enabled = false
+    @Published var current: Journey?
+    @Published var journeys: [Journey] = []
+    @Published var latest: JourneyPoint?
+    @Published var status = "Preview · GPS disabled"
+    @Published var errorMessage: String?
+    func startSession(simulated: Bool) {}
+    func requestSnapshot() {}
+    func suspend() {}
+    func resume() {}
+    func record(checkIn: Bool = false, alarm: Bool = false) {}
+    func endSession() {}
+    func delete(_ journey: Journey) {}
+}
+@MainActor
+final class MusicService: ObservableObject {
+    @Published var title = "Preview · music disabled"
+    @Published var playing = false
+    @Published var hasSelection = false
+    func requestAccess() async -> Bool { false }
+    func select(_ collection: MPMediaItemCollection) {}
+    func toggle() {}
+    func pauseForVoice() {}
+}
+struct MusicLibraryPicker: UIViewControllerRepresentable {
+    let selected: (MPMediaItemCollection) -> Void
+    let dismissed: () -> Void
+    func makeUIViewController(context: Context) -> UIViewController { UIViewController() }
+    func updateUIViewController(_ controller: UIViewController, context: Context) {}
 }

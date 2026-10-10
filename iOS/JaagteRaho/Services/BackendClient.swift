@@ -6,7 +6,7 @@ struct BackendClient {
     let token: String
     private func request(_ path: String, method: String = "GET", body: Data? = nil) -> URLRequest {
         var request = URLRequest(url: baseURL.appendingPathComponent(path))
-        request.httpMethod = method; request.httpBody = body; request.timeoutInterval = 8
+        request.httpMethod = method; request.httpBody = body; request.timeoutInterval = 15
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         if body != nil { request.setValue("application/json", forHTTPHeaderField: "Content-Type") }
         return request
@@ -17,6 +17,20 @@ struct BackendClient {
     func conversation(_ transcript: String, language: VoiceLanguage) async throws -> String {
         let body = try JSONSerialization.data(withJSONObject: ["transcript": transcript, "language": language.rawValue])
         let response: ConversationReply = try await json(request("v1/conversation", method: "POST", body: body))
+        return response.text
+    }
+    func companion(_ transcript: String, language: VoiceLanguage, assistant: String, history: [[String:String]] = []) async throws -> ConversationReply {
+        let body = try JSONSerialization.data(withJSONObject: ["transcript": transcript, "language": language.rawValue, "assistant": assistant, "history":history])
+        let response: ConversationReply = try await json(request("v1/companion", method: "POST", body: body))
+        return response
+    }
+    func transcribe(_ audio: Data, language: VoiceLanguage) async throws -> String {
+        var components = URLComponents(url: baseURL.appendingPathComponent("v1/transcribe"), resolvingAgainstBaseURL: false)!
+        components.queryItems = [URLQueryItem(name: "language", value: language.rawValue)]
+        var upload = request("v1/transcribe", method: "POST", body: audio)
+        upload.url = components.url; upload.timeoutInterval = 15
+        upload.setValue("audio/wav", forHTTPHeaderField: "Content-Type")
+        let response: ConversationReply = try await json(upload)
         return response.text
     }
     func speech(_ text: String, language: VoiceLanguage) async throws -> Data {
@@ -40,7 +54,7 @@ struct BackendClient {
         return try JSONDecoder().decode(T.self, from: data)
     }
     enum BackendError: Error { case unavailable, httpStatus(Int) }
-    struct ConversationReply: Decodable { let text: String }
+    struct ConversationReply: Decodable { let text: String; var provider: String? = nil }
 }
 struct ServerStatus: Decodable {
     let conversationConfigured: Bool

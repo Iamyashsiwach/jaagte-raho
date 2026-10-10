@@ -53,6 +53,13 @@ public struct DriverCalibration: Codable, Sendable {
     public func eyesClosed(_ metrics: FaceMetrics) -> Bool {
         metrics.leftEAR < leftThreshold && metrics.rightEAR < rightThreshold
     }
+    /// Enrollment must finish with a fresh, usable sample of both eyes open.
+    public func readyToMonitor(_ metrics: FaceMetrics?, at now: TimeInterval) -> Bool {
+        guard valid, now.isFinite, let metrics, metrics.usable else { return false }
+        let age = now - metrics.timestamp
+        return age >= 0 && age <= 0.75 &&
+            metrics.leftEAR >= leftThreshold && metrics.rightEAR >= rightThreshold
+    }
     public static let demo = Self(leftOpen: 0.30, rightOpen: 0.30,
                                   leftClosed: 0.05, rightClosed: 0.05, neutralPitch: 0)
 }

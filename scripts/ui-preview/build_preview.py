@@ -16,6 +16,7 @@ executable.parent.mkdir(parents=True, exist_ok=True)
 sources = [source / "PreviewServices.swift", source / "PreviewApp.swift"]
 sources += sorted((root / "iOS/JaagteRaho/Core").glob("*.swift"))
 sources += [root / "iOS/JaagteRaho/DriveModel.swift"]
+sources += [root / "iOS/JaagteRaho/Services/CompanionService.swift"]
 sources += sorted((root / "iOS/JaagteRaho/Views").glob("*.swift"))
 command = [
     "xcrun", "swiftc", "-swift-version", "5", "-strict-concurrency=targeted",

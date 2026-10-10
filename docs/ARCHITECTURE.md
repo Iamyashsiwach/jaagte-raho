@@ -12,7 +12,7 @@ The detector reads eye aspect ratios from face landmarks, jaw-opening blendshape
 
 ## Calibration and temporal rules
 
-Calibration collects approximately three seconds of stable open-eye measurements followed by approximately two seconds of closed-eye measurements. Gaps, invalid samples, or unsuitable eye geometry reset the current calibration phase. Median values establish per-driver eye thresholds and neutral pitch. Monitoring does not begin with an incomplete calibration.
+Calibration collects approximately three seconds of stable open-eye measurements followed by approximately two seconds of closed-eye measurements. Gaps, invalid samples, or unsuitable eye geometry reset the current calibration phase. Median values establish per-driver eye thresholds and neutral pitch. Ollie speaks each enrollment phase through online Smallest speech or device fallback. Completion stays on the enrollment screen until the user confirms **Start monitoring with Ollie** with fresh usable tracking of both eyes open (maximum age 750 ms). The detector starts with that open-eye sample, keeping calibration closure time out of the monitoring session.
 
 The `FatigueEngine` is a Swift struct with no camera, UI, network, or audio dependency. Every measurement uses the same monotonic clock. A watchdog advances missed-reply deadlines even when camera results stop arriving.
 
@@ -39,9 +39,9 @@ Lost tracking breaks continuous closure accumulation and changes the status to u
 
 `VoiceService` uses `AVAudioPlayer` for bundled language clips and the looping alarm. It falls back to an installed system voice if a prompt clip is missing. Haptics accompany a critical alarm. Actual audibility depends on volume, audio route, interruptions, and device state.
 
-Apple Speech receives `requiresOnDeviceRecognition=true`. The app reports whether the language/device supports that mode and does not fall back silently to network speech recognition. An unavailable recognizer or denied microphone permission leaves prompts and alarm active.
+Alarm acknowledgments use Apple Speech with `requiresOnDeviceRecognition=true`. Online companion input uses bounded 16 kHz WAV turns sent through the backend to Smallest Pulse for Hindi/English. The recording stops after a speech pause or at 12 seconds, and temporary audio is deleted when completed or cancelled. Punjabi online input uses labeled Apple recognition with network processing allowed. Unavailable recognition or denied microphone permission leaves the detection prompts and alarm active.
 
-Online voice is optional and follows an accepted short acknowledgment. The backend requests a brief response from GPT-5-nano, synthesizes it with Smallest.ai, and returns WAV audio. A new critical event cancels the conversation task and starts the local alarm immediately.
+The backend defaults to Smallest Electron for brief AI replies when `SMALLEST_API_KEY` is present, then Lightning for WAV speech. A configured OpenAI provider remains an alternative when Smallest is absent. The companion accepts six bounded history turns and supports a custom HTTPS assistant. A new critical event cancels microphone capture and conversation tasks and starts the local alarm immediately.
 
 The response prompt encourages a safe stop and rest. It disallows invented nearby rest stops, diagnoses, or claims that conversation makes a fatigued driver safe. Route-specific dhaba suggestions are outside the current MVP.
 
@@ -59,7 +59,7 @@ Delivery labels describe separate stages: queued on phone, stored on server, del
 - Provider keys never enter the app bundle or app settings.
 - The app's backend pairing token is stored in Keychain.
 - Camera frames are discarded after local inference; there is no video recording or frame-upload endpoint.
-- Raw microphone audio is used only by the on-device recognizer. The optional conversation call sends its short recognized transcript.
+- Online Hindi/English companion turns send a short microphone recording to the paired backend and Smallest Pulse; the backend validates bounded WAV bytes and stores no recordings. Local temporary files are deleted after completion/cancellation. Offline check-in recognition stays on-device. Conversation sends short text plus at most six bounded history turns.
 - Local events contain UUID, timestamp, trigger, simulation flag, and delivery status; server records add receipt/retry metadata.
 
 The local HTTP backend is intended for a trusted demonstration network. A deployed service needs HTTPS, appropriate token provisioning, operational monitoring, and data retention/access controls.

@@ -1,5 +1,47 @@
 SAARTHI — CONTINUATION CONTEXT
 Updated: 2026-10-10. Repository: https://github.com/Iamyashsiwach/jaagte-raho
+PUBLISHED DEMO: https://github.com/Sudhanshu069/jaagte-raho on main.
+Original repo denies this GitHub account write access; PR #1 contains the changes.
+Friend setup is in HOW_TO_RUN.md. Credentials remain outside Git in the ignored
+.env; build/friend-demo.env is a private shareable copy requested by the user.
+SIMULATOR PRESENTATION UPDATE: scripts/run-presentation.sh starts/reuses the
+backend, regenerates the project, grants app camera/microphone/location/music
+permissions, builds and launches with local signing and automatic backend pairing.
+Speech recognition is also authorized on this Mac's iPhone 17 iOS 26.5 simulator.
+Live backend transcription, conversation and WAV generation returned HTTP 200.
+App launch, visible pairing and the companion screen are verified. Paired apps
+refresh the backend connection on ordinary Xcode launches.
+EYE ENROLLMENT UPDATE: Home now puts Set up my eyes with Ollie first. Fourth
+onboarding step leads into parked camera setup. Ollie speaks open-eye (3 s),
+closed-eye (2 s), and completion steps with Smallest online speech/device fallback.
+Enrollment waits for explicit Start monitoring with Ollie and a fresh sample
+of BOTH eyes open. Each real session recalibrates; baselines remain in memory.
+The mascot's eye badge follows measured eye signals in setup and monitoring.
+ONLINE TALK FIX: Hindi/English companion microphone input now uses Smallest Pulse
+with bounded WAV turns. Electron supplies AI replies with six-turn history and
+Lightning voices them. All three stages use the supplied SMALLEST_API_KEY.
+Live authenticated Pulse -> Electron -> Lightning returned HTTP 200 at each stage.
+Punjabi voice input uses Apple recognition because Pulse does not list Punjabi.
+Temporary microphone recordings are deleted after completion/cancellation and
+never stored on the backend. Camera frames and GPS remain local.
+Restart the backend after pulling, then rebuild/reconnect the app. Talk to Ollie
+asks only for Microphone for Hindi/English online input, not Apple Speech access.
+36 Swift core checks and 30 backend tests pass after these updates.
+LATEST DEMO UPDATE: Companion is named OLLIE; app remains SAARTHI. New onboarding,
+mascot dashboard, companion hub, online Smallest speech, hands-free turns, a
+story/quiz in all three languages, music-library picker, opt-in GPS routes and
+location snapshot sharing are implemented. Custom HTTPS assistant adapter is
+server-side. Smallest live TTS returned HTTP 200 with valid WAV on this Mac.
+Provider credential is in ignored .env only. Smallest now powers transcription,
+general AI conversation and spoken output. Custom HTTPS assistant is selectable.
+36 Swift core checks and 30 backend tests pass. Real MediaPipe simulator app
+build/link/install/launch succeeded. Xcode 27 provides Device Hub instead of
+Simulator.app; the iPhone 17 (iOS 26.5) dashboard is visibly running there, with
+Smallest.ai online voice connected. The simulator helper now opens Device Hub
+and uses local ad-hoc signing so Keychain pairing succeeds without an Apple team.
+The iOS workspace is open in Xcode with that simulator selected. New phone
+GPS/speech/music behavior still needs acceptance. Read docs/FEATURE_SPECS.md and
+docs/FRIEND_SETUP.md for specifics.
 Use MAIN ONLY. Earlier feature branches were removed at the user's request.
 
 IMMEDIATE PRIORITY
@@ -17,7 +59,7 @@ Keep the imminent demo moving. On a second Mac with full Xcode, use the setup
 below. Do not rebuild in Flutter. All work stays on main.
 
 FAST START ON THE SECOND MAC
-  git clone https://github.com/Iamyashsiwach/jaagte-raho.git
+  git clone https://github.com/Sudhanshu069/jaagte-raho.git
   cd jaagte-raho
   brew install xcodegen cocoapods
   ./scripts/bootstrap.sh
@@ -62,8 +104,9 @@ IMPLEMENTATION ALREADY WRITTEN
   API and Smallest lightning_v3.1_pro TTS. Provider APIs were checked live.
 - Fleet notifications require a user-provided HTTPS webhook; none configured.
   UI distinguishes queued/stored events from accepted webhooks.
-- No camera frames or raw microphone audio are uploaded. Optional cloud
-  conversation sends only the short recognized reply after acknowledgment.
+- Camera frames are never uploaded. Online companion WAV turns go to Smallest
+  Pulse through the authenticated backend; offline check-ins stay on-device.
+  Electron receives short text plus at most six bounded history turns.
 
 VALIDATION ACTUALLY COMPLETED
 - 26/26 real Swift core assertion checks passed (scripts/check-core.sh).
