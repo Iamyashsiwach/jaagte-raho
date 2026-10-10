@@ -7,7 +7,12 @@ The app is now named SAARTHI. It has been signed, installed and launched on
 the connected physical iPhone 14. User reported camera stuck at Preparing
 face tracking. Current fix stops suspending during permission-dialog inactive
 transitions, starts camera before model initialization, and refreshes preview
-connections. Rebuilt signed app; live camera-frame verification is in progress.
+connections. Rebuilt, signed, installed and launched the fixed app. Physical
+iPhone logs now confirm capture started=true, video frames received, and face
+inference completed; process remained running. Live camera startup is verified.
+Recognition accuracy, calibration behavior and sustained performance still need
+acceptance checks. Debug-only SAARTHI_START_CAMERA=1 launches live calibration
+directly for device diagnostics; ordinary launches show the dashboard.
 Keep the imminent demo moving. On a second Mac with full Xcode, use the setup
 below. Do not rebuild in Flutter. All work stays on main.
 
