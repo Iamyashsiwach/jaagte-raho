@@ -1,0 +1,11 @@
+{
+  "name": "jaagte-raho-voice",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20.12" },
+  "scripts": {
+    "start": "node --env-file=../.env index.mjs",
+    "test": "node --test test.mjs",
+    "voices": "node --env-file=../.env generate-voices.mjs"
+  }
+}

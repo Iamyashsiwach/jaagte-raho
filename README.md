@@ -6,6 +6,8 @@ Jaagte Raho means “Stay Awake.” This prototype uses the driver's dashboard-m
 
 **Project status:** native iOS MVP under active development. Physical-iPhone compilation, signing, camera behavior, speech support, and sustained performance still require verification. The first demonstration must take place while parked. This is a prototype with heuristic thresholds, not a validated driver-safety system.
 
+**Continuing on another Mac?** Read [context.txt](context.txt) for current state and immediate demo setup.
+
 ## What the MVP does
 
 - Front-camera face tracking with the bundled Google MediaPipe Face Landmarker model.
@@ -56,7 +58,7 @@ See [architecture and current behavior](docs/ARCHITECTURE.md) and the [parked de
 
 Prerequisites: a Mac with **full Xcode**, an attached trusted iPhone, enabled iPhone Developer Mode, an Apple signing team, XcodeGen, and CocoaPods. Command Line Tools alone cannot build or install the app.
 
-The project-generation and dependency scripts are being integrated with the MVP. Once available:
+Generate the project and install the pinned dependencies:
 
 ```sh
 ./scripts/bootstrap.sh
@@ -64,6 +66,8 @@ open iOS/JaagteRaho.xcworkspace
 ```
 
 In Xcode, select the JaagteRaho target, choose your signing team, select the connected iPhone, and run. Allow camera access for monitoring; microphone and speech permissions are needed only for voice replies. Use the app's voice test and calibrate while parked before starting a live session.
+
+For an installed iPhone simulator, run `./scripts/run-simulator.sh` after bootstrap. It builds, installs, and launches without signing credentials. Start the labeled synthetic demo for a predictable presentation.
 
 The connected-device helper also supports a signed build and install:
 
@@ -126,6 +130,8 @@ npm test
 
 From the repository root, `./scripts/check.sh` runs the integrated core, backend, and credential checks.
 
+Current executed results: **26/26 Swift core assertions and 19/19 backend tests pass**. All 16 real iOS Swift files passed direct iPhoneOS SDK typechecking with real MediaPipe frameworks. Full app linking and installation remain unverified because the original Mac ran out of disk space during the build.
+
 The core tests cover closure escalation, acknowledgments, missing/stale frames, calibration, and timing. Backend tests cover authentication, event handling, provider failures, and fleet delivery. Automated tests establish behavior for those cases; physical-device recognition accuracy, alert audibility, battery use, inference latency, and heat still need measurement. See [the demo checklist](docs/DEMO.md) before presenting the live camera flow.
 
 ## Repository layout
@@ -140,7 +146,7 @@ Package.swift         Host-runnable Swift core package
 .env.example          Empty credential/configuration template
 ```
 
-Branches: `main` for the shared baseline; `feat/ios-mvp` for integration; `feat/driver-dashboard` for interface work; `feat/voice-backend` for voice and fleet service work.
+All demo development is on `main`.
 
 ## Privacy and operating limits
 

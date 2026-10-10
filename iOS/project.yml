@@ -1,0 +1,73 @@
+name: JaagteRaho
+options:
+  bundleIdPrefix: com.jaagteraho
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: targeted
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+targets:
+  JaagteRaho:
+    type: application
+    platform: iOS
+    sources:
+      - path: JaagteRaho
+        excludes:
+          - Resources
+    resources:
+      - path: JaagteRaho/Resources/Audio
+        buildPhase: resources
+        type: folder
+      - path: JaagteRaho/Resources/face_landmarker.task
+      - path: JaagteRaho/Resources/Assets.xcassets
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jaagteraho.driver
+        TARGETED_DEVICE_FAMILY: "1"
+        INFOPLIST_FILE: JaagteRaho/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    info:
+      path: JaagteRaho/Info.plist
+      properties:
+        CFBundleDisplayName: Jaagte Raho
+        NSCameraUsageDescription: Jaagte Raho watches eye closure on this phone to detect possible drowsiness. Camera frames are not recorded or uploaded.
+        NSMicrophoneUsageDescription: Answer a short hands-free check-in. Microphone audio stays on this phone.
+        NSSpeechRecognitionUsageDescription: Recognize a short driver acknowledgment using on-device speech where this language is supported.
+        NSLocalNetworkUsageDescription: Connect to your Mac's Jaagte Raho voice backend on the same network.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIRequiresFullScreen: true
+        UILaunchScreen:
+          UIColorName: Background
+        UIApplicationSupportsIndirectInputEvents: true
+  JaagteRahoTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: ../Tests/JaagteRahoCoreTests
+    dependencies:
+      - target: JaagteRaho
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  JaagteRaho:
+    build:
+      targets:
+        JaagteRaho: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - JaagteRahoTests

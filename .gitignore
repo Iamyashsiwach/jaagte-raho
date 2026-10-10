@@ -5,6 +5,7 @@ Secrets.xcconfig
 Local.xcconfig
 Pods/
 .build/
+.swiftpm/
 build/
 DerivedData/
 *.xcuserstate

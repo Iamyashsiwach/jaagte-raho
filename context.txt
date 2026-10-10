@@ -1,0 +1,121 @@
+JAAGTE RAHO — CONTINUATION CONTEXT
+Updated: 2026-10-10. Repository: https://github.com/Iamyashsiwach/jaagte-raho
+Use MAIN ONLY. Earlier feature branches were removed at the user's request.
+
+IMMEDIATE PRIORITY
+The demo is imminent. Continue on a second Mac with full Xcode and an installed
+iPhone simulator runtime. Build and launch the existing native iOS app, then
+use its clearly labeled synthetic demo. Do not rebuild the app in Flutter.
+
+FAST START ON THE SECOND MAC
+  git clone https://github.com/Iamyashsiwach/jaagte-raho.git
+  cd jaagte-raho
+  brew install xcodegen cocoapods
+  ./scripts/bootstrap.sh
+  ./scripts/run-simulator.sh
+
+Alternatively open iOS/JaagteRaho.xcworkspace in Xcode, select the JaagteRaho
+scheme and an iPhone simulator, then Run. Open the WORKSPACE, not the root
+Swift package and not just the .xcodeproj. No Apple signing account or provider
+credentials are needed for the simulator's offline synthetic demo.
+Set SIMULATOR_ID if multiple simulators are available and a specific one is desired.
+
+DEMO FLOW
+The dashboard has Hindi, Punjabi, and English, Test Voice, live monitoring,
+and a synthetic demo. Start the synthetic demo, hold the closed-eye control,
+and observe the bundled voice check-in around 1.5 seconds and a latched alarm
+around 3 seconds. The demo is explicitly labeled and never sends a fleet alert.
+Use the parked/end-session confirmation to dismiss the latched alarm.
+Real camera monitoring requires a physical iPhone, permissions, and parked
+calibration (approximately 3 seconds open eyes, then 2 seconds closed eyes).
+The simulator demonstrates app behavior, not real fatigue detection accuracy.
+See docs/DEMO.md for the live demonstration and acceptance checks.
+
+IMPLEMENTATION ALREADY WRITTEN
+- Native SwiftUI, iOS 16+, dark midnight/amber/mint dashboard.
+- Dashboard, calibration, session metrics, latched critical screen, settings,
+  local event history, clearly labeled synthetic demo.
+- AVFoundation front camera at 640x480, 24 capture FPS, approximately 12
+  inference FPS (8 under thermal pressure), discarded late frames.
+- Google MediaPipeTasksVision / TasksCommon pinned to 0.10.35 via local
+  official podspec copies. Podfile.lock included; Pods excluded from Git.
+- Bundled face_landmarker.task (SHA256
+  64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff).
+- Calibrated bilateral eye aspect ratios, time-weighted closure fraction,
+  repeated yawn/head nod candidates, stale-frame watchdog.
+- Offline WAV prompts already generated in all three languages and a local
+  alarm with haptics. Audio resources are an Audio folder reference.
+- Apple Speech requires on-device recognition; availability is language/device
+  dependent. Missing recognition never prevents the alarm.
+- Critical alarm stays latched through eye reopening, speech, and camera loss.
+- Atomic JSON event persistence with retry queue; Keychain backend pairing token.
+- Optional Node 20.12+ backend, no npm dependencies; GPT-5-nano through Responses
+  API and Smallest lightning_v3.1_pro TTS. Provider APIs were checked live.
+- Fleet notifications require a user-provided HTTPS webhook; none configured.
+  UI distinguishes queued/stored events from accepted webhooks.
+- No camera frames or raw microphone audio are uploaded. Optional cloud
+  conversation sends only the short recognized reply after acknowledgment.
+
+VALIDATION ACTUALLY COMPLETED
+- 26/26 real Swift core assertion checks passed (scripts/check-core.sh).
+- 19/19 Node backend tests passed (node --test server/test.mjs).
+- Integrated scripts/check.sh passed core, backend, credential checks and Swift
+  syntax parsing on this Mac after Xcode installation.
+- All 16 REAL iOS Swift source files passed direct iPhoneOS 27 SDK typechecking,
+  targeting iOS 16 with the installed real MediaPipe device frameworks.
+  No stubs were used in the final check; no diagnostics occurred.
+  This verifies source/API types, not app linking or installation.
+- A tiny Mac Catalyst UI preview compiled from the real views and core/model,
+  with hardware/network/audio stubs and an explicit preview banner.
+- Full iOS app compilation, linking, simulator launch, and physical-device
+  behavior are NOT yet verified. Generic iOS build attempts failed with
+  No space left on device during SDK module compilation, before source validation.
+- This Mac has Xcode 27.0 (27A266a), but no simulator runtimes and fluctuating
+  disk space. Xcode copied several GB of connected iPhone debug symbols.
+- Connected iPhone 14 has iOS 27 and Developer Mode enabled. No valid code-signing
+  identity was found on the original Mac. Physical install requires signing.
+
+FIRST TASKS FOR THE NEXT AGENT
+1. ./scripts/bootstrap.sh and ./scripts/run-simulator.sh. Fix any actual build
+   errors; do not assume parsing/typechecking is a complete build.
+2. Show and inspect the dashboard and labeled demo, verify bundled sound output.
+3. Keep all work on main and push changes promptly. User explicitly wants one branch.
+4. For physical iPhone: choose an Apple signing team in Xcode or run
+   TEAM_ID=YOUR_TEAM ./scripts/run-iphone.sh with a connected trusted phone.
+5. Measure actual inference latency/FPS and sustained thermals before claiming
+   performance. No measured device performance numbers exist yet.
+
+CREDENTIALS
+Both provider keys were supplied privately by the user. They exist ONLY in the
+ignored root .env on the original Mac; they are intentionally absent from Git
+and from this file. Do not repeat, commit, or embed any key in the iOS app.
+Offline camera/demo/voice prompts/alarm work without keys.
+To enable optional cloud voice on the second Mac, create .env from .env.example
+and transfer keys privately. Set a random APP_TOKEN of at least 24 characters.
+For iPhone-to-Mac networking set HOST=0.0.0.0 and pair using the Mac's .local
+hostname on the same Wi-Fi; keep provider credentials server-side.
+  cd server
+  npm start
+All /v1 endpoints require the backend APP_TOKEN. Never paste it in README.
+
+IMPORTANT PATHS
+iOS/project.yml                      XcodeGen project definition
+iOS/Podfile / Podspecs / Podfile.lock  pinned dependencies
+iOS/JaagteRaho/DriveModel.swift        app orchestration
+iOS/JaagteRaho/Camera/                 real MediaPipe camera integration
+iOS/JaagteRaho/Core/                   deterministic detector/calibration
+iOS/JaagteRaho/Services/               voice, backend, event persistence
+iOS/JaagteRaho/Views/                  actual SwiftUI interface
+iOS/JaagteRaho/Resources/              bundled model/audio/icon
+Tests/JaagteRahoCoreTests/             26 core tests
+server/                               optional voice/fleet backend and 19 tests
+scripts/                              bootstrap, checks, simulator/device runners
+scripts/ui-preview/                   optional actual-view Mac Catalyst preview
+README.md / docs/ARCHITECTURE.md / docs/DEMO.md
+TECHNICAL_PLAN.md is an earlier Flutter proposal; native iOS supersedes it.
+
+SAFETY/PRODUCT LIMITS
+Prototype heuristics, not validated fatigue diagnosis. Foreground monitoring
+only. Camera loss/dim light/background show tracking unavailable. No fictional
+dhaba distances or coffee-as-cure claims. Alerts direct the driver to stop safely
+and rest. A reply does not mean the driver is safe to continue.

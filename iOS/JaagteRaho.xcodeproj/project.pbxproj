@@ -1,0 +1,615 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		005DBBE19AC07028D63AC035 /* Pods_JaagteRaho.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C225CE219965650D24E1E683 /* Pods_JaagteRaho.framework */; };
+		23F1A1795F11BB1F1254FD6F /* CalibrationCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40FA89035C0CEA19C7F69130 /* CalibrationCollector.swift */; };
+		2A926CB38CF60CD0F9AC3002 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA462A565A860FD517EAD00 /* SettingsView.swift */; };
+		2DEA2FB61AA0B596F3DAFF0F /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7AB0D99D7EA891DC2B4871A /* CameraPreview.swift */; };
+		38C1266B654F8FAA8A046145 /* DriveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07EC0ADFBBF4D3FE2EBBBF6 /* DriveModel.swift */; };
+		510D540654053852754AD7FE /* VoiceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9469FA993E3F509D08A235F9 /* VoiceService.swift */; };
+		5C401A3A0582DB3B08481589 /* RahoTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4618C3285FC3120AF26AAA /* RahoTheme.swift */; };
+		66A275BE90D9CD19FDC3C8E8 /* BackendClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3902FBA864CBD935F711ED /* BackendClient.swift */; };
+		72C5F299D5E6035BD49FCCDD /* FatigueEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FD89C442E4AFF1263F66AF /* FatigueEngine.swift */; };
+		7BC30AB58BBF6D7CE2CB756E /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0BD655B9C21EB086D8CAEFB /* HistoryView.swift */; };
+		959A3930FCA58D968191E519 /* FaceMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613BD548EC1C248B1CB03D24 /* FaceMetrics.swift */; };
+		95E2C933DC02D932E1C19E47 /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32472E26F5FAB0E31D977346 /* EventStore.swift */; };
+		A4EDDA7C821B44C5F30EAFB4 /* JaagteRahoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC927B1A734F8A168C780E4 /* JaagteRahoApp.swift */; };
+		B59C3CAC4866505CF70C31C9 /* SessionViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793454695A2DFD804E673AE4 /* SessionViews.swift */; };
+		C3EFB6BFF14DD0BE949A0B6E /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22EE77817779EBA03C10D6FE /* CameraService.swift */; };
+		C750DABB73E3C1FB62C4ECC8 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59481A927FE314D51DEEE6E /* DashboardView.swift */; };
+		CB84537A7784D4072CF5617D /* VoiceLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35BC1A551F2E93540F90843 /* VoiceLanguage.swift */; };
+		D598D2BF6B545585C1CAA65B /* FatigueEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DE6A0079E44F6E0A07E968 /* FatigueEngineTests.swift */; };
+		F0572A1C6C8BC310D3FA5FFC /* Pods_JaagteRahoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 158EDC0A55FDD02D33641C1C /* Pods_JaagteRahoTests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9BF0EF5A9DFAA05388BC4E2E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B72C82DE700D9DB3CDE0FBFB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D69AFD0D100A1C6C842A67E2;
+			remoteInfo = JaagteRaho;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		158EDC0A55FDD02D33641C1C /* Pods_JaagteRahoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JaagteRahoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1FA462A565A860FD517EAD00 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		22EE77817779EBA03C10D6FE /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
+		32472E26F5FAB0E31D977346 /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
+		40FA89035C0CEA19C7F69130 /* CalibrationCollector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationCollector.swift; sourceTree = "<group>"; };
+		47FD89C442E4AFF1263F66AF /* FatigueEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FatigueEngine.swift; sourceTree = "<group>"; };
+		5CBE2DDFD2F0B225C0FDD3F8 /* Pods-JaagteRahoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRahoTests.release.xcconfig"; path = "Target Support Files/Pods-JaagteRahoTests/Pods-JaagteRahoTests.release.xcconfig"; sourceTree = "<group>"; };
+		613BD548EC1C248B1CB03D24 /* FaceMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceMetrics.swift; sourceTree = "<group>"; };
+		6E4618C3285FC3120AF26AAA /* RahoTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RahoTheme.swift; sourceTree = "<group>"; };
+		745E247FA7FD7074F945EBC8 /* Pods-JaagteRahoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRahoTests.debug.xcconfig"; path = "Target Support Files/Pods-JaagteRahoTests/Pods-JaagteRahoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		793454695A2DFD804E673AE4 /* SessionViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionViews.swift; sourceTree = "<group>"; };
+		9469FA993E3F509D08A235F9 /* VoiceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceService.swift; sourceTree = "<group>"; };
+		A07EC0ADFBBF4D3FE2EBBBF6 /* DriveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveModel.swift; sourceTree = "<group>"; };
+		A0BD655B9C21EB086D8CAEFB /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		A35BC1A551F2E93540F90843 /* VoiceLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceLanguage.swift; sourceTree = "<group>"; };
+		A37E59CD5CD7A288EE82DABD /* Pods-JaagteRaho.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRaho.release.xcconfig"; path = "Target Support Files/Pods-JaagteRaho/Pods-JaagteRaho.release.xcconfig"; sourceTree = "<group>"; };
+		ABC48EA71D9D420E06536829 /* JaagteRahoTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = JaagteRahoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7AB0D99D7EA891DC2B4871A /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		C225CE219965650D24E1E683 /* Pods_JaagteRaho.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JaagteRaho.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C8DE6A0079E44F6E0A07E968 /* FatigueEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FatigueEngineTests.swift; sourceTree = "<group>"; };
+		CEC927B1A734F8A168C780E4 /* JaagteRahoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JaagteRahoApp.swift; sourceTree = "<group>"; };
+		DF3902FBA864CBD935F711ED /* BackendClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendClient.swift; sourceTree = "<group>"; };
+		EB896D8293D16E38ABAE5112 /* JaagteRaho.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = JaagteRaho.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED35C2DC8D4D4F6F014D0A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		EE5331F4A0D3E8C3BF4AA693 /* Pods-JaagteRaho.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JaagteRaho.debug.xcconfig"; path = "Target Support Files/Pods-JaagteRaho/Pods-JaagteRaho.debug.xcconfig"; sourceTree = "<group>"; };
+		F59481A927FE314D51DEEE6E /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3C1B3853001B8D38F9F9B162 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0572A1C6C8BC310D3FA5FFC /* Pods_JaagteRahoTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		440222A60DF40D1E0ECFA3C8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				005DBBE19AC07028D63AC035 /* Pods_JaagteRaho.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		016816CEECBB2EB85E95AFCA /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				40FA89035C0CEA19C7F69130 /* CalibrationCollector.swift */,
+				613BD548EC1C248B1CB03D24 /* FaceMetrics.swift */,
+				47FD89C442E4AFF1263F66AF /* FatigueEngine.swift */,
+				A35BC1A551F2E93540F90843 /* VoiceLanguage.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		034B2549A183D4E4E3633913 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EB896D8293D16E38ABAE5112 /* JaagteRaho.app */,
+				ABC48EA71D9D420E06536829 /* JaagteRahoTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1072547DDECDAA1C7631140D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F59481A927FE314D51DEEE6E /* DashboardView.swift */,
+				A0BD655B9C21EB086D8CAEFB /* HistoryView.swift */,
+				6E4618C3285FC3120AF26AAA /* RahoTheme.swift */,
+				793454695A2DFD804E673AE4 /* SessionViews.swift */,
+				1FA462A565A860FD517EAD00 /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		1484A9167530E3F61CFDBE70 /* JaagteRaho */ = {
+			isa = PBXGroup;
+			children = (
+				A07EC0ADFBBF4D3FE2EBBBF6 /* DriveModel.swift */,
+				ED35C2DC8D4D4F6F014D0A9F /* Info.plist */,
+				CEC927B1A734F8A168C780E4 /* JaagteRahoApp.swift */,
+				CF5890BA29CA5C7E9434B9B7 /* Camera */,
+				016816CEECBB2EB85E95AFCA /* Core */,
+				E4F7230ECDF2352340B68B10 /* Services */,
+				1072547DDECDAA1C7631140D /* Views */,
+			);
+			path = JaagteRaho;
+			sourceTree = "<group>";
+		};
+		267D3C3D0241D4C034E0301E /* JaagteRahoCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				C8DE6A0079E44F6E0A07E968 /* FatigueEngineTests.swift */,
+			);
+			path = JaagteRahoCoreTests;
+			sourceTree = "<group>";
+		};
+		41FDD5D3939787CB7050A67B /* Jaagte Raho */ = {
+			isa = PBXGroup;
+			children = (
+				5A0EAA447AE3D0AEBE81AF68 /* Tests */,
+			);
+			name = "Jaagte Raho";
+			path = ..;
+			sourceTree = "<group>";
+		};
+		5A0EAA447AE3D0AEBE81AF68 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				267D3C3D0241D4C034E0301E /* JaagteRahoCoreTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		67082E8EF4EF45190DBBD650 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				EE5331F4A0D3E8C3BF4AA693 /* Pods-JaagteRaho.debug.xcconfig */,
+				A37E59CD5CD7A288EE82DABD /* Pods-JaagteRaho.release.xcconfig */,
+				745E247FA7FD7074F945EBC8 /* Pods-JaagteRahoTests.debug.xcconfig */,
+				5CBE2DDFD2F0B225C0FDD3F8 /* Pods-JaagteRahoTests.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		CE357049774327F0D18D8553 = {
+			isa = PBXGroup;
+			children = (
+				41FDD5D3939787CB7050A67B /* Jaagte Raho */,
+				1484A9167530E3F61CFDBE70 /* JaagteRaho */,
+				034B2549A183D4E4E3633913 /* Products */,
+				67082E8EF4EF45190DBBD650 /* Pods */,
+				FC0D3D64888593F7A373EFE0 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		CF5890BA29CA5C7E9434B9B7 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				B7AB0D99D7EA891DC2B4871A /* CameraPreview.swift */,
+				22EE77817779EBA03C10D6FE /* CameraService.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		E4F7230ECDF2352340B68B10 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				DF3902FBA864CBD935F711ED /* BackendClient.swift */,
+				32472E26F5FAB0E31D977346 /* EventStore.swift */,
+				9469FA993E3F509D08A235F9 /* VoiceService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		FC0D3D64888593F7A373EFE0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C225CE219965650D24E1E683 /* Pods_JaagteRaho.framework */,
+				158EDC0A55FDD02D33641C1C /* Pods_JaagteRahoTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AE0475036648DA8592BED995 /* JaagteRahoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A109C57917B41967D2CF8183 /* Build configuration list for PBXNativeTarget "JaagteRahoTests" */;
+			buildPhases = (
+				E3D4072D84ED44AEC2F75552 /* [CP] Check Pods Manifest.lock */,
+				4B03DD76C632ADEE1FF05F5A /* Sources */,
+				3C1B3853001B8D38F9F9B162 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1FF50C6E59FDA31CB0A055A9 /* PBXTargetDependency */,
+			);
+			name = JaagteRahoTests;
+			productName = JaagteRahoTests;
+			productReference = ABC48EA71D9D420E06536829 /* JaagteRahoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D69AFD0D100A1C6C842A67E2 /* JaagteRaho */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6F5EA0CDF1BD03B6B9C537D /* Build configuration list for PBXNativeTarget "JaagteRaho" */;
+			buildPhases = (
+				9FD255EC3BC55AD6EEE0F7F6 /* [CP] Check Pods Manifest.lock */,
+				A5E7228C0356748331AD73FB /* Sources */,
+				440222A60DF40D1E0ECFA3C8 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = JaagteRaho;
+			productName = JaagteRaho;
+			productReference = EB896D8293D16E38ABAE5112 /* JaagteRaho.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B72C82DE700D9DB3CDE0FBFB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					AE0475036648DA8592BED995 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					D69AFD0D100A1C6C842A67E2 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = D7292E7B67547C454A95BADA /* Build configuration list for PBXProject "JaagteRaho" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = CE357049774327F0D18D8553;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 034B2549A183D4E4E3633913 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D69AFD0D100A1C6C842A67E2 /* JaagteRaho */,
+				AE0475036648DA8592BED995 /* JaagteRahoTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9FD255EC3BC55AD6EEE0F7F6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-JaagteRaho-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E3D4072D84ED44AEC2F75552 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-JaagteRahoTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4B03DD76C632ADEE1FF05F5A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D598D2BF6B545585C1CAA65B /* FatigueEngineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5E7228C0356748331AD73FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66A275BE90D9CD19FDC3C8E8 /* BackendClient.swift in Sources */,
+				23F1A1795F11BB1F1254FD6F /* CalibrationCollector.swift in Sources */,
+				2DEA2FB61AA0B596F3DAFF0F /* CameraPreview.swift in Sources */,
+				C3EFB6BFF14DD0BE949A0B6E /* CameraService.swift in Sources */,
+				C750DABB73E3C1FB62C4ECC8 /* DashboardView.swift in Sources */,
+				38C1266B654F8FAA8A046145 /* DriveModel.swift in Sources */,
+				95E2C933DC02D932E1C19E47 /* EventStore.swift in Sources */,
+				959A3930FCA58D968191E519 /* FaceMetrics.swift in Sources */,
+				72C5F299D5E6035BD49FCCDD /* FatigueEngine.swift in Sources */,
+				7BC30AB58BBF6D7CE2CB756E /* HistoryView.swift in Sources */,
+				A4EDDA7C821B44C5F30EAFB4 /* JaagteRahoApp.swift in Sources */,
+				5C401A3A0582DB3B08481589 /* RahoTheme.swift in Sources */,
+				B59C3CAC4866505CF70C31C9 /* SessionViews.swift in Sources */,
+				2A926CB38CF60CD0F9AC3002 /* SettingsView.swift in Sources */,
+				CB84537A7784D4072CF5617D /* VoiceLanguage.swift in Sources */,
+				510D540654053852754AD7FE /* VoiceService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1FF50C6E59FDA31CB0A055A9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D69AFD0D100A1C6C842A67E2 /* JaagteRaho */;
+			targetProxy = 9BF0EF5A9DFAA05388BC4E2E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0D3E889383316BD8F9F19C3C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		3B5B7BEC03E7BCA02F1F4FBC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		3F48616D7B3F9EF2836C7D55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 745E247FA7FD7074F945EBC8 /* Pods-JaagteRahoTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaagteraho.JaagteRahoTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JaagteRaho.app/JaagteRaho";
+			};
+			name = Debug;
+		};
+		775AB041F273E36A44BCC9F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5CBE2DDFD2F0B225C0FDD3F8 /* Pods-JaagteRahoTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaagteraho.JaagteRahoTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JaagteRaho.app/JaagteRaho";
+			};
+			name = Release;
+		};
+		8F91A97AEA823913022CDD93 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A37E59CD5CD7A288EE82DABD /* Pods-JaagteRaho.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = JaagteRaho/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaagteraho.driver;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		CE45E4DC8FF11C2A9A1066D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = EE5331F4A0D3E8C3BF4AA693 /* Pods-JaagteRaho.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = JaagteRaho/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jaagteraho.driver;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A109C57917B41967D2CF8183 /* Build configuration list for PBXNativeTarget "JaagteRahoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F48616D7B3F9EF2836C7D55 /* Debug */,
+				775AB041F273E36A44BCC9F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D6F5EA0CDF1BD03B6B9C537D /* Build configuration list for PBXNativeTarget "JaagteRaho" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE45E4DC8FF11C2A9A1066D9 /* Debug */,
+				8F91A97AEA823913022CDD93 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D7292E7B67547C454A95BADA /* Build configuration list for PBXProject "JaagteRaho" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0D3E889383316BD8F9F19C3C /* Debug */,
+				3B5B7BEC03E7BCA02F1F4FBC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B72C82DE700D9DB3CDE0FBFB /* Project object */;
+}
